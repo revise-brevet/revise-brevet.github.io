@@ -221,6 +221,10 @@ input[type=range]{width:84px;accent-color:var(--p)}
 .qnext.show{display:block}
 .qb-idk{width:100%;margin-top:9px;padding:11px;border-radius:11px;background:transparent;border:1px dashed var(--b);color:var(--t2);cursor:pointer;font-size:.85rem;font-weight:600;transition:.18s}
 .qb-idk:hover{border-color:var(--violet);color:var(--violet)}
+#auth input{width:100%;padding:13px 15px;background:rgba(10,14,30,.6);border:1px solid var(--b);border-radius:13px;color:var(--t);font-size:.95rem;margin-bottom:11px;font-family:inherit}
+#auth input:focus{outline:none;border-color:var(--p)}
+.cloud-box{background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(45,212,191,.06));border:1px solid rgba(56,189,248,.22);border-radius:13px;padding:13px;margin-bottom:10px}
+.cloud-on{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;color:var(--p)}
 .qres{text-align:center;padding:32px 14px;display:none}
 .qres.show{display:block;animation:pop .5s ease}
 .re{font-size:4.6rem;display:block;animation:float 2s ease-in-out infinite;margin-bottom:8px}
@@ -579,9 +583,10 @@ input[type=range]{width:84px;accent-color:var(--p)}
       <div id="panal"></div>
       <div class="sec">💾 Mon compte (sauvegarde)</div>
       <div class="binfo">
-        <div style="font-size:.86rem;margin-bottom:4px">Profil : <b id="acct-name" style="color:var(--p)">—</b></div>
-        <div style="font-size:.78rem;color:var(--t2);line-height:1.5;margin-bottom:12px">Sauvegarde ta progression pour la retrouver sur un autre appareil. <b>Exporte</b> ici → puis <b>importe</b> le code sur l'autre téléphone/ordi.</div>
-        <div class="rdc-btns"><button class="rbtn" onclick="openExport()">📤 Exporter mon profil</button><button class="rbtn2" onclick="openImport()">📥 Importer un profil</button></div>
+        <div style="font-size:.86rem;margin-bottom:8px">Profil : <b id="acct-name" style="color:var(--p)">—</b></div>
+        <div class="cloud-box" id="cloud-status"></div>
+        <div style="font-size:.74rem;color:var(--t3);line-height:1.5;margin:10px 0 8px">Ou transfert manuel par code/fichier :</div>
+        <div class="rdc-btns"><button class="rbtn2" onclick="openExport()">📤 Exporter</button><button class="rbtn2" onclick="openImport()">📥 Importer</button></div>
       </div>
       <div class="sec">🏆 Historique récent</div>
       <div id="phist"></div>
@@ -613,6 +618,18 @@ input[type=range]{width:84px;accent-color:var(--p)}
   </div>
 </div>
 
+<!-- AUTH (compte en ligne) -->
+<div class="lvo" id="auth"><div class="lvc" style="max-width:400px;width:92%;text-align:left">
+  <div style="font-size:1.15rem;font-weight:900;margin-bottom:4px">☁️ Compte en ligne</div>
+  <div style="font-size:.8rem;color:var(--t2);margin-bottom:14px;line-height:1.5">Crée un compte (email + mot de passe) pour retrouver ta progression sur TOUS tes appareils, automatiquement.</div>
+  <input type="email" id="au-email" placeholder="ton@email.com" autocomplete="email">
+  <input type="password" id="au-pw" placeholder="mot de passe (6 caractères min)" autocomplete="current-password">
+  <div id="au-msg" style="font-size:.8rem;min-height:18px;margin:2px 0 10px;font-weight:600"></div>
+  <div class="rdc-btns"><button class="rbtn" id="au-go" onclick="doSignIn()">Se connecter</button><button class="rbtn2" onclick="doSignUp()">Créer un compte</button></div>
+  <div style="text-align:center;margin-top:12px"><button class="rbtn2" onclick="closeAuth()" style="font-size:.82rem">Fermer</button></div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================================ MASCOT
 function mascotSVG(mood){
@@ -752,8 +769,75 @@ function newState(name,goal,style,cls){
   sessions:1,tq:0,tc:0,sc:sc,ms:ms,hist:[],pomoSess:0,pomoLog:[],
   cog:{times:[],hardOk:0,hardTot:0,easyOk:0,easyTot:0,fast:0,slow:0},routine:null};
 }
-function sv(){localStorage.setItem('bm4',JSON.stringify(G))}
+function sv(){G.updatedAt=Date.now();localStorage.setItem('bm4',JSON.stringify(G));cloudPushDebounced()}
 function ld(){var d=localStorage.getItem('bm4');if(d){G=JSON.parse(d);return true}return false}
+
+// ============================================================ CLOUD (Supabase)
+var SB_URL='https://lerdpanjfqnasygsoqnk.supabase.co';
+var SB_KEY='sb_publishable_KnOX3deop4AcrKsmTa1xCg_BpRuApu9';
+var sb=null,sbUser=null,_pushT=null;
+function initSB(){if(sb)return sb;if(window.supabase&&window.supabase.createClient){try{sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){sb=null}}return sb}
+function cloudPushDebounced(){if(!sb||!sbUser)return;clearTimeout(_pushT);_pushT=setTimeout(cloudPush,1500)}
+function cloudPush(){
+ if(!sb||!sbUser)return;
+ sb.from('saves').upsert({user_id:sbUser.id,data:G,updated_at:new Date().toISOString()}).then(function(r){
+  var el=document.getElementById('cloud-sync');if(el&&!r.error)el.textContent='☁️ Sauvegardé à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+ });
+}
+function cloudPull(silent){
+ if(!sb||!sbUser)return Promise.resolve();
+ return sb.from('saves').select('data').eq('user_id',sbUser.id).maybeSingle().then(function(r){
+  if(r.error){return}
+  if(r.data&&r.data.data){
+   var cloud=r.data.data;var cu=cloud.updatedAt||0,lu=(G&&G.updatedAt)||0;
+   if(cu>=lu){G=cloud;localStorage.setItem('bm4',JSON.stringify(G));if(!silent)toast('☁️','Progression récupérée du cloud !');try{renderAll()}catch(e){}}
+   else{cloudPush()}
+  }else{cloudPush()} // pas encore de save en ligne -> on envoie la locale
+ });
+}
+function openAuth(){document.getElementById('au-msg').textContent='';document.getElementById('auth').classList.add('show')}
+function closeAuth(){document.getElementById('auth').classList.remove('show')}
+function authMsg(t,err){var m=document.getElementById('au-msg');m.textContent=t;m.style.color=err?'var(--ko)':'var(--p)'}
+function doSignUp(){
+ if(!initSB()){authMsg('Connexion impossible (hors-ligne ?)',1);return}
+ var e=document.getElementById('au-email').value.trim(),p=document.getElementById('au-pw').value;
+ if(!e||p.length<6){authMsg('Email + mot de passe (6 caractères min)',1);return}
+ authMsg('Création du compte...');
+ sb.auth.signUp({email:e,password:p}).then(function(r){
+  if(r.error){authMsg(r.error.message,1);return}
+  if(r.data.session){sbUser=r.data.user;onLogged(true)}
+  else{authMsg('Compte créé ! Connecte-toi maintenant.',0)}
+ });
+}
+function doSignIn(){
+ if(!initSB()){authMsg('Connexion impossible (hors-ligne ?)',1);return}
+ var e=document.getElementById('au-email').value.trim(),p=document.getElementById('au-pw').value;
+ if(!e||!p){authMsg('Entre ton email et ton mot de passe',1);return}
+ authMsg('Connexion...');
+ sb.auth.signInWithPassword({email:e,password:p}).then(function(r){
+  if(r.error){authMsg(r.error.message,1);return}
+  sbUser=r.data.user;onLogged(false);
+ });
+}
+function onLogged(isNew){
+ closeAuth();toast('✅','Connecté ☁️');
+ cloudPull(false).then(function(){renderCloud();try{renderAll()}catch(e){}});
+}
+function doSignOut(){if(sb)sb.auth.signOut();sbUser=null;renderCloud();toast('👋','Déconnecté (progression gardée sur cet appareil)')}
+function renderCloud(){
+ var el=document.getElementById('cloud-status');if(!el)return;
+ if(sbUser){
+  el.innerHTML='<div class="cloud-on">☁️ Synchronisé — <span style="color:var(--t)">'+(sbUser.email||'')+'</span></div><div id="cloud-sync" style="font-size:.72rem;color:var(--t3);margin-top:4px">Sauvegarde automatique activée</div><div class="rdc-btns" style="margin-top:9px"><button class="rbtn2" onclick="doSignOut()" style="font-size:.8rem">Se déconnecter</button></div>';
+ }else{
+  el.innerHTML='<div style="font-size:.82rem;font-weight:700;margin-bottom:3px">☁️ Compte en ligne (recommandé)</div><div style="font-size:.74rem;color:var(--t2);line-height:1.5;margin-bottom:9px">Connecte-toi pour retrouver ta progression sur tous tes appareils, automatiquement.</div><button class="rbtn" onclick="openAuth()" style="font-size:.85rem">☁️ Se connecter / Créer un compte</button>';
+ }
+}
+function checkCloudSession(){
+ if(!initSB())return;
+ sb.auth.getSession().then(function(r){
+  if(r.data&&r.data.session){sbUser=r.data.session.user;renderCloud();cloudPull(true)}
+ });
+}
 
 // ============================================================ ONBOARDING
 var ostep=1,selStyle=null,initSc={},diagIdx=0,diagScore=0,diagStart=0,diagQs=[],diagTimes=[],diagSub={},diagWOk=0,diagWTot=0;
@@ -1169,6 +1253,7 @@ function renderProf(){
  document.getElementById('pav').textContent=G.name[0].toUpperCase();
  document.getElementById('pn').textContent=G.name;
  var an=document.getElementById('acct-name');if(an)an.textContent=G.name;
+ renderCloud();
  var titles=['Apprenti','Étudiant','Réviseur','Stratège','Expert','Maître','Légende'];
  document.getElementById('psub').textContent='Niveau '+G.lv+' • '+titles[Math.min(G.lv-1,titles.length-1)];
  document.getElementById('pbadges').innerHTML=badges().map(function(b){return '<div class="badge" style="color:'+b.c+';border-color:'+b.c+';background:'+b.c+'18">'+b.i+' '+b.n+'</div>'}).join('');
@@ -1306,6 +1391,8 @@ function closeAcct(){document.getElementById('acct').classList.remove('show')}
 document.getElementById('introMascot').innerHTML=mascotSVG('happy');
 
 if(ld()){launch()}else{document.getElementById('so').classList.add('active')}
+checkCloudSession();
+window.addEventListener('load',function(){setTimeout(checkCloudSession,400)});
 </script>
 </body>
 </html>

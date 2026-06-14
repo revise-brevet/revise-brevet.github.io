@@ -219,6 +219,8 @@ input[type=range]{width:84px;accent-color:var(--p)}
 .expl b{color:var(--t)}
 .qnext{width:100%;padding:13px;background:linear-gradient(120deg,var(--p),var(--p2));border:none;border-radius:12px;color:#04221f;font-size:.92rem;font-weight:800;cursor:pointer;display:none;margin-top:12px}
 .qnext.show{display:block}
+.qb-idk{width:100%;margin-top:9px;padding:11px;border-radius:11px;background:transparent;border:1px dashed var(--b);color:var(--t2);cursor:pointer;font-size:.85rem;font-weight:600;transition:.18s}
+.qb-idk:hover{border-color:var(--violet);color:var(--violet)}
 .qres{text-align:center;padding:32px 14px;display:none}
 .qres.show{display:block;animation:pop .5s ease}
 .re{font-size:4.6rem;display:block;animation:float 2s ease-in-out infinite;margin-bottom:8px}
@@ -1005,7 +1007,7 @@ function renderQ(){
  qTime=(q.d==='h')?22:(q.d==='m')?28:38;qAns=false;qQStart=Date.now();
  var dc={e:'#34d399',m:'#fbbf24',h:'#fb7185'}[q.d]||'#a78bfa';var dl={e:'Facile',m:'Moyen',h:'Difficile'}[q.d]||'Mix';
  var lvtag=q.lv?'<span class="lvtag">'+q.lv+'ᵉ</span>':'';
- document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
+ document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><button class="qb-idk" id="qidk" onclick="idk()">🤷 Je ne sais pas</button><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
  qTmr=setInterval(function(){qTime--;var tv=document.getElementById('tv');if(tv){tv.textContent=qTime;tv.parentNode.style.color=qTime<=8?'var(--rose)':'var(--amber)'}if(qTime<=0){clearInterval(qTmr);if(!qAns)timeQ()}},1000);
 }
 function ans(c){
@@ -1024,6 +1026,17 @@ function ans(c){
  G.tq++;if(c===q.a)G.tc++;sv();
 }
 function timeQ(){if(qAns)return;qAns=true;var q=qQs[qIdx];var btns=document.querySelectorAll('.qb');for(var i=0;i<btns.length;i++)btns[i].classList.add('lk');btns[q.a].classList.add('ok');document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');toast('⏰','Temps écoulé !');G.tq++;sv()}
+function idk(){
+ if(qAns)return;qAns=true;clearInterval(qTmr);
+ var q=qQs[qIdx];var btns=document.querySelectorAll('.qb');for(var i=0;i<btns.length;i++)btns[i].classList.add('lk');
+ btns[q.a].classList.add('ok');
+ var idkb=document.getElementById('qidk');if(idkb)idkb.style.display='none';
+ if(!G.cog)G.cog={times:[],hardOk:0,hardTot:0,easyOk:0,easyTot:0,fast:0,slow:0};
+ if(q.d==='h')G.cog.hardTot++;if(q.d==='e')G.cog.easyTot++;
+ document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');
+ toast('🤷','Pas grave ! Regarde la bonne réponse, c\'est comme ça qu\'on apprend');
+ G.tq++;sv();
+}
 function nextQ(){qIdx++;renderQ()}
 function showQRes(){
  clearInterval(qTmr);var p=Math.round(qOk/qQs.length*100);

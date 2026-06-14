@@ -374,6 +374,13 @@ input[type=range]{width:84px;accent-color:var(--p)}
 <div class="toast" id="toast"><span class="ti" id="ti">🎉</span><span class="tt" id="tt"></span></div>
 <div class="xpp" id="xpp"><div class="xppt" id="xppt">+50 XP</div><div class="xpps" id="xpps"></div></div>
 <div class="lvo" id="lvo"><div class="lvc"><span class="lve">🎊</span><div class="lvt" id="lvt">Niveau 2 !</div><div class="lvs" id="lvs"></div><button class="lvbtn" onclick="closeLV()">Continuer →</button></div></div>
+<div class="lvo" id="acct"><div class="lvc" style="max-width:440px;width:92%;text-align:left">
+  <div style="font-size:1.15rem;font-weight:900;margin-bottom:4px" id="acct-title">Sauvegarde</div>
+  <div style="font-size:.82rem;color:var(--t2);margin-bottom:12px;line-height:1.5" id="acct-desc"></div>
+  <textarea id="acct-ta" class="rdc-ta" style="min-height:90px;font-size:.66rem;word-break:break-all"></textarea>
+  <div class="rdc-btns" id="acct-btns" style="margin-top:10px"></div>
+  <div style="text-align:center;margin-top:12px"><button class="rbtn2" onclick="closeAcct()" style="font-size:.82rem">Fermer</button></div>
+</div></div>
 
 <!-- ONBOARDING -->
 <div id="so" class="screen active">
@@ -568,6 +575,12 @@ input[type=range]{width:84px;accent-color:var(--p)}
       <div class="binfo" id="binfo"></div>
       <div class="sec">📈 Mon analyse</div>
       <div id="panal"></div>
+      <div class="sec">💾 Mon compte (sauvegarde)</div>
+      <div class="binfo">
+        <div style="font-size:.86rem;margin-bottom:4px">Profil : <b id="acct-name" style="color:var(--p)">—</b></div>
+        <div style="font-size:.78rem;color:var(--t2);line-height:1.5;margin-bottom:12px">Sauvegarde ta progression pour la retrouver sur un autre appareil. <b>Exporte</b> ici → puis <b>importe</b> le code sur l'autre téléphone/ordi.</div>
+        <div class="rdc-btns"><button class="rbtn" onclick="openExport()">📤 Exporter mon profil</button><button class="rbtn2" onclick="openImport()">📥 Importer un profil</button></div>
+      </div>
       <div class="sec">🏆 Historique récent</div>
       <div id="phist"></div>
       <div style="margin-top:18px;text-align:center"><button class="rbtn2" onclick="resetAll()" style="font-size:.78rem">🗑 Réinitialiser l'app</button></div>
@@ -1142,6 +1155,7 @@ function subTips(id,s){
 function renderProf(){
  document.getElementById('pav').textContent=G.name[0].toUpperCase();
  document.getElementById('pn').textContent=G.name;
+ var an=document.getElementById('acct-name');if(an)an.textContent=G.name;
  var titles=['Apprenti','Étudiant','Réviseur','Stratège','Expert','Maître','Légende'];
  document.getElementById('psub').textContent='Niveau '+G.lv+' • '+titles[Math.min(G.lv-1,titles.length-1)];
  document.getElementById('pbadges').innerHTML=badges().map(function(b){return '<div class="badge" style="color:'+b.c+';border-color:'+b.c+';background:'+b.c+'18">'+b.i+' '+b.n+'</div>'}).join('');
@@ -1248,6 +1262,32 @@ function styleLabel(s){return {visual:'visuel',audio:'auditif',reading:'lecture'
 function styleAdvice(s){return {visual:'Fais des fiches colorées, des cartes mentales et des schémas.',audio:'Lis tes cours à voix haute et réécoute-toi avant de dormir.',reading:'Résume chaque chapitre en 10 lignes, la reformulation est ta force.',kine:'Multiplie les exercices : 30 min de pratique > 2h de lecture passive.'}[s]||'Adapte ta méthode.'}
 function goalLabel(g){return {r:'Avoir le brevet',ab:'Assez Bien',b:'Bien',tb:'Très Bien'}[g]||g}
 function resetAll(){if(confirm('Tout réinitialiser ? Ta progression sera effacée.')){localStorage.removeItem('bm4');location.reload()}}
+// --- Compte / sauvegarde par code ---
+function b64e(s){return btoa(unescape(encodeURIComponent(s)))}
+function b64d(s){return decodeURIComponent(escape(atob(s)))}
+function openExport(){
+ var code=b64e(JSON.stringify(G));
+ document.getElementById('acct-title').textContent='📤 Exporter mon profil';
+ document.getElementById('acct-desc').textContent='Copie ce code (ou télécharge le fichier), puis sur l\'autre appareil ouvre l\'app → Profil → Importer, et colle-le.';
+ var ta=document.getElementById('acct-ta');ta.value=code;ta.readOnly=true;
+ document.getElementById('acct-btns').innerHTML='<button class="rbtn" onclick="copyCode()">📋 Copier le code</button><button class="rbtn2" onclick="downloadProfile()">💾 Télécharger fichier</button>';
+ document.getElementById('acct').classList.add('show');
+}
+function copyCode(){var ta=document.getElementById('acct-ta');ta.select();try{navigator.clipboard.writeText(ta.value)}catch(e){try{document.execCommand('copy')}catch(e2){}}toast('📋','Code copié !')}
+function downloadProfile(){var blob=new Blob([document.getElementById('acct-ta').value],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='brevet-master-'+(G.name||'profil')+'.txt';document.body.appendChild(a);a.click();a.remove()}
+function openImport(){
+ document.getElementById('acct-title').textContent='📥 Importer un profil';
+ document.getElementById('acct-desc').textContent='Colle ici le code obtenu sur ton autre appareil (ou charge le fichier), puis valide. ⚠️ Ça remplacera la progression de cet appareil.';
+ var ta=document.getElementById('acct-ta');ta.value='';ta.readOnly=false;
+ document.getElementById('acct-btns').innerHTML='<button class="rbtn" onclick="doImport()">✅ Charger ce profil</button><input type="file" id="acct-file" accept=".txt,.json" style="display:none" onchange="fileImport(event)"><button class="rbtn2" onclick="document.getElementById(\'acct-file\').click()">📂 Charger un fichier</button>';
+ document.getElementById('acct').classList.add('show');
+}
+function doImport(){
+ var v=document.getElementById('acct-ta').value.trim();if(!v){toast('✏️','Colle d\'abord un code');return}
+ try{var obj=JSON.parse(b64d(v));if(!obj.name||!obj.sc)throw 0;localStorage.setItem('bm4',JSON.stringify(obj));toast('✅','Profil de '+obj.name+' chargé !');setTimeout(function(){location.reload()},800)}catch(e){toast('❌','Code invalide, vérifie le copier-coller')}
+}
+function fileImport(ev){var f=ev.target.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){document.getElementById('acct-ta').value=(''+rd.result).trim();doImport()};rd.readAsText(f)}
+function closeAcct(){document.getElementById('acct').classList.remove('show')}
 
 (function(){var s='';for(var i=0;i<40;i++){s+='<div class="star" style="left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation-delay:'+Math.random()*3+'s"></div>'}document.getElementById('stars').innerHTML=s})();
 document.getElementById('introMascot').innerHTML=mascotSVG('happy');

@@ -335,7 +335,36 @@ input[type=range]{width:84px;accent-color:var(--p)}
 .lvbtn{margin-top:20px;padding:12px 28px;background:linear-gradient(120deg,var(--p),var(--p2));border:none;border-radius:13px;color:#04221f;font-size:.92rem;font-weight:800;cursor:pointer}
 .cf{position:fixed;width:9px;height:9px;top:-12px;z-index:9999;border-radius:2px;animation:confetti 3s ease-in forwards;pointer-events:none}
 
-@media(max-width:480px){.srow{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:1fr}.styleg{grid-template-columns:1fr}}
+.cdbig{display:flex;align-items:center;gap:16px;border-radius:22px;padding:18px 22px;margin-bottom:18px;cursor:pointer;position:relative;overflow:hidden;background:linear-gradient(120deg,rgba(56,189,248,.16),rgba(167,139,250,.14));border:1px solid rgba(56,189,248,.3);transition:.2s}
+.cdbig:hover{transform:translateY(-2px)}
+.cdbig-num{font-size:3.6rem;font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(120deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;min-width:96px;text-align:center}
+.cdbig-txt{flex:1}
+.cdbig-t{font-size:.92rem;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.cdbig-s{font-size:.8rem;color:var(--t2);margin-top:3px}
+.cdbig-ico{font-size:2.4rem;opacity:.85}
+.cdbig.final{background:linear-gradient(120deg,rgba(251,113,133,.22),rgba(251,191,36,.16));border-color:rgba(251,113,133,.5);animation:glow 1.6s ease-in-out infinite}
+.cdbig.final .cdbig-num{background:linear-gradient(120deg,var(--rose),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:bob 1s ease-in-out infinite}
+.cdbig.final .cdbig-t{color:var(--rose)}
+.rdc{background:var(--card);border:1px solid var(--b);border-radius:18px;padding:20px;margin-bottom:14px}
+.rdc-meta{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.rdc-sub{font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:20px}
+.rdc-type{font-size:.7rem;color:var(--t2);font-weight:600}
+.rdc-q{font-size:1.05rem;font-weight:700;line-height:1.5;margin-bottom:6px}
+.rdc-cons{font-size:.8rem;color:var(--t2);line-height:1.5;margin-bottom:14px;background:rgba(56,189,248,.06);border-left:3px solid var(--p2);border-radius:8px;padding:10px 12px}
+.rdc-ta{width:100%;min-height:140px;background:rgba(10,14,30,.5);border:1px solid var(--b);border-radius:13px;color:var(--t);font-size:.92rem;padding:13px;font-family:inherit;line-height:1.55;resize:vertical}
+.rdc-ta:focus{outline:none;border-color:var(--p)}
+.rdc-wc{font-size:.72rem;color:var(--t3);text-align:right;margin-top:5px}
+.rdc-btns{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.rdc-reveal{display:none;margin-top:14px;animation:fadeUp .3s ease}
+.rdc-reveal.show{display:block}
+.rdc-box{border-radius:13px;padding:14px;margin-bottom:10px}
+.rdc-method{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2)}
+.rdc-model{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)}
+.rdc-box h4{font-size:.82rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.rdc-box ol,.rdc-box ul{margin-left:18px;font-size:.86rem;line-height:1.6;color:var(--t2)}
+.rdc-box p{font-size:.88rem;line-height:1.6;color:var(--t)}
+.rdc-self{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+@media(max-width:480px){.srow{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:1fr}.styleg{grid-template-columns:1fr}.cdbig-num{font-size:3rem;min-width:78px}.nb{font-size:.58rem}.nb .ni{font-size:1.2rem}}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--b);border-radius:2px}
 </style>
 </head>
@@ -401,6 +430,11 @@ input[type=range]{width:84px;accent-color:var(--p)}
     <div class="tc active" id="t-dash">
       <div class="hello">Salut <b id="dn"></b> 👋</div>
       <div class="hellosub" id="dsub"></div>
+      <div class="cdbig" id="cdbig" onclick="showTab('prof',document.querySelectorAll('.nb')[5])">
+        <div class="cdbig-num" id="cdbig-num">—</div>
+        <div class="cdbig-txt"><div class="cdbig-t" id="cdbig-t">jours avant le BREVET</div><div class="cdbig-s" id="cdbig-s">2026</div></div>
+        <div class="cdbig-ico" id="cdbig-ico">🎓</div>
+      </div>
       <div class="mascot-row">
         <div id="m-dash"></div>
         <div class="bubble"><div class="who">Zo • ton coach</div><div class="msg" id="m-dash-msg">...</div><button class="more" onclick="newAdvice()">💬 Un autre conseil</button></div>
@@ -502,6 +536,15 @@ input[type=range]{width:84px;accent-color:var(--p)}
       <div class="card"><div style="font-size:.7rem;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:9px">⏱ Sessions du jour</div><div id="plog"></div></div>
     </div>
 
+    <!-- REDACTION -->
+    <div class="tc" id="t-redac">
+      <div class="hello">Apprends à <b>rédiger</b> ✍️</div>
+      <div class="hellosub">Sujets inspirés d'anciens brevets. Écris ta réponse, puis compare avec le corrigé et la méthode.</div>
+      <div class="mascot-row"><div id="m-redac"></div><div class="bubble"><div class="who">Zo</div><div class="msg" id="m-redac-msg">Au brevet, bien rédiger rapporte autant que la bonne idée. On s'entraîne !</div></div></div>
+      <div class="stabs" id="redac-tabs"></div>
+      <div id="redac-area"></div>
+    </div>
+
     <!-- PROFIL -->
     <div class="tc" id="t-prof">
       <div class="phero">
@@ -536,6 +579,7 @@ input[type=range]{width:84px;accent-color:var(--p)}
     <button class="nb" onclick="showTab('quiz',this)"><span class="ni">⚡</span>Quiz</button>
     <button class="nb" onclick="showTab('fiches',this)"><span class="ni">🃏</span>Fiches</button>
     <button class="nb" onclick="showTab('pomo',this)"><span class="ni">⏱</span>Focus</button>
+    <button class="nb" onclick="showTab('redac',this)"><span class="ni">✍️</span>Rédac</button>
     <button class="nb" onclick="showTab('prof',this)"><span class="ni">👤</span>Profil</button>
   </nav>
 </div>
@@ -561,10 +605,11 @@ function mascotSVG(mood){
   var eyeR='<ellipse class="m-eye" cx="64" cy="52" rx="7" ry="8" fill="#0a0e1f"/><circle cx="66.5" cy="49.5" r="2.2" fill="#fff"/>';
   var mouth='<path d="M44 66 Q52 73 60 66" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
   if(mood==='happy'){eyeL='<path d="M33 52 Q40 45 47 52" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';eyeR='<path d="M57 52 Q64 45 71 52" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';mouth='<path d="M42 64 Q52 76 62 64" stroke="#0a0e1f" stroke-width="4" fill="none" stroke-linecap="round"/>';}
+  var uid='zg'+Math.random().toString(36).slice(2,8);
   return '<svg class="mascot '+(mood==='happy'?'happy':'')+'" viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg">'+
-    '<defs><radialGradient id="zg" cx="40%" cy="35%"><stop offset="0%" stop-color="#7ef0e0"/><stop offset="55%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#1aa7c9"/></radialGradient></defs>'+
+    '<defs><radialGradient id="'+uid+'" cx="40%" cy="35%"><stop offset="0%" stop-color="#7ef0e0"/><stop offset="55%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#1aa7c9"/></radialGradient></defs>'+
     '<path d="M52 6 L60 22 L52 14 Z" fill="#fbbf24"/><circle cx="52" cy="9" r="4" fill="#fbbf24"/>'+
-    '<path d="M52 18 C74 18 90 36 90 58 C90 80 74 96 52 96 C30 96 14 80 14 58 C14 36 30 18 52 18 Z" fill="url(#zg)"/>'+
+    '<path d="M52 18 C74 18 90 36 90 58 C90 80 74 96 52 96 C30 96 14 80 14 58 C14 36 30 18 52 18 Z" fill="url(#'+uid+')"/>'+
     '<ellipse cx="42" cy="38" rx="11" ry="7" fill="rgba(255,255,255,.45)"/>'+
     '<circle cx="30" cy="70" r="5" fill="rgba(251,113,133,.55)"/><circle cx="74" cy="70" r="5" fill="rgba(251,113,133,.55)"/>'+
     eyeL+eyeR+mouth+'</svg>';
@@ -801,19 +846,26 @@ function ensureRoutine(){
  var today=new Date().toDateString();
  if(!G.routine||G.routine.date!==today){
   var srt=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]});
-  var w1=srt[0],w2=srt[1];var fcSubId=FC[w2.id]?w2.id:'fr';var fcName=SUB.find(function(s){return s.id===fcSubId}).n;
-  G.routine={date:today,goalMin:20,doneMin:0,tasks:[
-    {id:'t1',ic:w1.i,l:'Quiz de '+w1.n,m:'8 min • ta matière la plus fragile',min:8,done:false,act:'quiz',sub:w1.id},
-    {id:'t2',ic:SUB.find(function(s){return s.id===fcSubId}).i,l:'Fiches de '+fcName,m:'6 min • mémorisation',min:6,done:false,act:'fiches',sub:fcSubId},
-    {id:'t3',ic:'⏱',l:'Session Focus',m:'6 min • concentration',min:6,done:false,act:'pomo',sub:''},
-  ]};
+  var w1=srt[0],w2=srt[1],w3=srt[2];var fcSubId=FC[w2.id]?w2.id:'fr';var fcName=SUB.find(function(s){return s.id===fcSubId}).n;
+  var days=Math.max(0,Math.ceil((brevetDate()-new Date())/86400000));
+  var fin=days<=7; // semaine finale = on révise comme des oufs
+  var tasks=[
+    {id:'t1',ic:w1.i,l:'Quiz de '+w1.n,m:(fin?'15 min':'8 min')+' • ta matière la plus fragile',min:fin?15:8,done:false,act:'quiz',sub:w1.id},
+    {id:'t2',ic:SUB.find(function(s){return s.id===fcSubId}).i,l:'Fiches de '+fcName,m:(fin?'12 min':'6 min')+' • mémorisation',min:fin?12:6,done:false,act:'fiches',sub:fcSubId},
+    {id:'t3',ic:'⏱',l:'Session Focus',m:(fin?'12 min':'6 min')+' • concentration',min:fin?12:6,done:false,act:'pomo',sub:''},
+  ];
+  if(fin){
+   tasks.push({id:'t4',ic:'✍️',l:'Rédaction (exemple de brevet)',m:'15 min • apprends à bien rédiger',min:15,done:false,act:'redac',sub:''});
+   tasks.push({id:'t5',ic:w3.i,l:'Quiz de '+w3.n,m:'6 min • 2ᵉ point faible',min:6,done:false,act:'quiz',sub:w3.id});
+  }
+  G.routine={date:today,goalMin:fin?60:20,doneMin:0,fin:fin,tasks:tasks};
   sv();
  }
 }
 function renderRoutine(){
  var r=G.routine;var focus=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]})[0];
  document.getElementById('rt-focus').textContent='🎯 Focus : '+focus.n;
- document.getElementById('rt-goal').textContent='Objectif : '+r.goalMin+' minutes par jour, chaque jour.';
+ document.getElementById('rt-goal').textContent=r.fin?'🔥 SEMAINE FINALE : '+r.goalMin+' min/jour, on donne tout !':'Objectif : '+r.goalMin+' minutes par jour, chaque jour.';
  document.getElementById('rt-goalmin').textContent=r.goalMin;
  document.getElementById('rt-min').textContent=r.doneMin;
  var pct=Math.min(100,Math.round(r.doneMin/r.goalMin*100));
@@ -834,6 +886,7 @@ function goTask(act,sub){
  if(act==='quiz'){if(sub)qSub=sub;showTab('quiz',document.querySelectorAll('.nb')[1])}
  else if(act==='fiches'){if(sub&&FC[sub])fcSub=sub;showTab('fiches',document.querySelectorAll('.nb')[2])}
  else if(act==='pomo'){showTab('pomo',document.querySelectorAll('.nb')[3])}
+ else if(act==='redac'){showTab('redac',document.querySelectorAll('.nb')[4])}
 }
 
 // ============================================================ MASCOT ADVICE
@@ -863,7 +916,14 @@ function newAdvice(){var pool=ADVICE.concat([dashAdvice()]);document.getElementB
 function renderDash(){
  document.getElementById('dn').textContent=G.name;
  var days=Math.max(0,Math.ceil((brevetDate()-new Date())/86400000));
- document.getElementById('dsub').textContent='Plus que '+days+' jours avant le brevet. '+(days<=14?'Phase finale, on lâche rien ! 🔥':'On construit ta réussite jour après jour 💪');
+ document.getElementById('dsub').textContent='Plus que '+days+' jours avant le brevet. '+(days<=7?'SEMAINE FINALE, on révise à fond ! 🔥':days<=30?'Dernière ligne droite, on lâche rien ! 💪':'On construit ta réussite jour après jour 💪');
+ // gros compte à rebours
+ var cdb=document.getElementById('cdbig');
+ document.getElementById('cdbig-num').textContent=days;
+ var by=brevetDate().getFullYear();
+ if(days<=0){cdb.classList.add('final');document.getElementById('cdbig-num').textContent='🎓';document.getElementById('cdbig-t').textContent='C\'EST LE GRAND JOUR !';document.getElementById('cdbig-s').textContent='Donne tout, tu es prêt 💪';document.getElementById('cdbig-ico').textContent='✨';}
+ else if(days<=7){cdb.classList.add('final');document.getElementById('cdbig-t').textContent=(days===1?'jour avant le BREVET !':'jours avant le BREVET');document.getElementById('cdbig-s').textContent='🔥 Semaine finale : révise comme un fou !';document.getElementById('cdbig-ico').textContent='🔥';}
+ else{cdb.classList.remove('final');document.getElementById('cdbig-t').textContent='jours avant le BREVET';document.getElementById('cdbig-s').textContent='Brevet '+by+' • clique pour voir comment il marche';document.getElementById('cdbig-ico').textContent='🎓';}
  document.getElementById('m-dash-msg').textContent=dashAdvice();
  renderRoutine();
  document.getElementById('stq').textContent=G.tq;
@@ -921,7 +981,9 @@ function startQuiz(){
  var pool=QB[qSub]||QB.ma;var eff=qDiff;if(qDiff==='auto')eff=autoDiff();
  var filtered=pool;if(eff!=='mix')filtered=pool.filter(function(q){return q.d===eff});if(filtered.length<3)filtered=pool;
  qQs=shuffle(filtered.slice()).slice(0,Math.min(filtered.length,6));qIdx=0;qOk=0;
- if(qDiff==='auto')document.getElementById('m-quiz-msg').textContent='Je t\'ai préparé un niveau '+({e:'facile 🟢',m:'moyen 🟡',h:'difficile 🔴'}[eff])+' adapté à toi. Go !';
+ var sObj=SUB.find(function(x){return x.id===qSub});var sName=sObj?sObj.n:'';
+ var lvlTxt=qDiff==='auto'?('niveau '+({e:'facile 🟢',m:'moyen 🟡',h:'difficile 🔴'}[eff])+' (adapté à toi)'):'niveau choisi';
+ document.getElementById('m-quiz-msg').innerHTML='On bosse <b>'+sName+'</b> — '+lvlTxt+'. '+qQs.length+' questions, lis bien chaque explication après ta réponse. C\'est parti ! 🚀';
  renderQ();
 }
 function renderQ(){
@@ -975,6 +1037,61 @@ function flipCard(){document.getElementById('fc').classList.toggle('flip');fcFli
 function fcAns(known){if(!fcFlip){flipCard();return}if(known){fcKnown++;addXP(5,'📖 +5 XP')}else{toast('🔄','On la reverra')}fcIdx++;if(fcIdx>=fcCards.length){toast('🎉','Série finie : '+fcKnown+'/'+fcCards.length+' su(es) !');confetti();fcIdx=0;fcKnown=0}setTimeout(showFC,250)}
 function fcSkip(){fcIdx=(fcIdx+1)%fcCards.length;showFC()}
 
+// ============================================================ REDACTION (inspiré d'anciens brevets)
+var REDAC=[
+ {sub:'fr',col:'#38bdf8',type:'Français • question de réflexion (3ᵉ)',q:"« La lecture est-elle encore utile aujourd'hui ? »",cons:"Rédige un paragraphe argumenté d'une dizaine de lignes : une thèse claire, deux arguments, un exemple précis, une mini-conclusion.",
+  method:["Annonce ta réponse (ta thèse) dès la 1ʳᵉ phrase.","Donne un 1ᵉʳ argument + un connecteur logique (d'abord, en effet…).","Donne un 2ᵉ argument + un exemple concret (un livre, une expérience perso).","Conclus en reformulant ton avis."],
+  model:"Oui, la lecture reste essentielle aujourd'hui. D'abord, elle enrichit le vocabulaire et l'imagination : un lecteur écrit et s'exprime mieux. Ensuite, même à l'ère des écrans, lire développe la concentration, une qualité rare et précieuse. Par exemple, lire un roman comme « Vendredi ou la vie sauvage » m'a appris à réfléchir au courage et à la solitude. Pour ces raisons, la lecture garde toute son utilité, même dans un monde numérique."},
+ {sub:'hg',col:'#fbbf24',type:'Histoire • développement construit (3ᵉ)',q:"Montrez que la Première Guerre mondiale est une guerre totale.",cons:"Rédige un développement construit : une courte introduction, 2 ou 3 paragraphes avec des exemples, une conclusion.",
+  method:["Intro : présente le sujet (1914-1918) et annonce que c'est une guerre totale.","§1 : mobilisation militaire (tranchées, Verdun, armes nouvelles).","§2 : mobilisation économique et civile (usines, femmes, propagande).","Conclusion : bilan (millions de morts) et réponse à la question."],
+  model:"La Première Guerre mondiale (1914-1918) oppose deux camps en Europe. On parle de « guerre totale » car elle mobilise toute la société. Militairement, des millions de soldats s'affrontent dans les tranchées lors de batailles meurtrières comme Verdun (1916), avec des armes nouvelles (gaz, mitrailleuses). Économiquement, l'arrière est mobilisé : les usines fabriquent des armes, les femmes remplacent les hommes au travail, et la propagande soutient l'effort de guerre. Ainsi, parce qu'elle engage les armées comme les civils et l'économie entière, la Première Guerre mondiale est bien une guerre totale, qui fit près de 10 millions de morts."},
+ {sub:'ma',col:'#2dd4bf',type:'Maths • problème rédigé (3ᵉ)',q:"Un magasin baisse un article de 80 € de 15 %. Quel est le nouveau prix ? Rédige ta solution.",cons:"Au brevet, on note le raisonnement ET la phrase de conclusion, pas seulement le résultat. Montre tes étapes.",
+  method:["Écris ce que tu cherches.","Pose le calcul de la baisse OU le coefficient multiplicateur.","Effectue le calcul proprement.","Termine par une phrase de conclusion avec l'unité (€)."],
+  model:"On cherche le prix après une baisse de 15 %.\nMéthode par coefficient : baisser de 15 % revient à multiplier par (1 − 0,15) = 0,85.\nNouveau prix = 80 × 0,85 = 68.\nConclusion : après la réduction, l'article coûte 68 €."},
+ {sub:'sv',col:'#fb7185',type:'SVT • justifier (3ᵉ)',q:"Expliquez pourquoi un enfant peut ressembler à ses deux parents.",cons:"Réponds en utilisant les mots : ADN, chromosomes, allèles, gamètes. 4 à 6 lignes.",
+  method:["Pars du fait que l'information génétique est dans l'ADN (chromosomes).","Explique que l'enfant reçoit la moitié de ses chromosomes de chaque parent (gamètes).","Conclus : il hérite donc d'allèles des deux → ressemblance aux deux."],
+  model:"Chaque cellule contient l'information génétique sous forme d'ADN, porté par les chromosomes. Lors de la reproduction, l'enfant reçoit la moitié de ses chromosomes du père (par le spermatozoïde) et l'autre moitié de la mère (par l'ovule), qui sont les gamètes. Il possède donc des allèles venant de ses deux parents. C'est pourquoi un enfant peut présenter des caractères (yeux, cheveux…) ressemblant à la fois à son père et à sa mère."},
+ {sub:'hg',col:'#fbbf24',type:'EMC • expliquer (3ᵉ)',q:"Qu'est-ce qu'être citoyen français ? Donnez des droits et des devoirs.",cons:"Définis le citoyen, puis cite 2 droits et 2 devoirs. 5 à 7 lignes.",
+  method:["Définis : citoyen = membre d'une communauté politique, avec des droits et des devoirs.","Cite 2 droits (voter, s'exprimer librement…).","Cite 2 devoirs (respecter la loi, payer l'impôt, voter est un droit mais participer…).","Conclus sur l'idée de vivre ensemble."],
+  model:"Être citoyen français, c'est appartenir à la communauté nationale et participer à la vie démocratique. Le citoyen a des droits : il peut voter à partir de 18 ans et s'exprimer librement. Il a aussi des devoirs : respecter les lois et payer ses impôts, qui financent les services publics (école, hôpitaux). Être citoyen, c'est donc à la fois bénéficier de libertés et agir de façon responsable pour le bien commun."},
+];
+var redacSub='all',redacIdx=0;
+function renderRedacTabs(){
+ var subs=['all'];REDAC.forEach(function(r){if(subs.indexOf(r.sub)<0)subs.push(r.sub)});
+ document.getElementById('redac-tabs').innerHTML=subs.map(function(id){
+  var lbl=id==='all'?'🗂️ Tous':(function(){var s=SUB.find(function(x){return x.id===id});return s?s.i+' '+s.n:id})();
+  return '<div class="stab'+(id===redacSub?' on':'')+'" onclick="setRedacSub(\''+id+'\',this)">'+lbl+'</div>';
+ }).join('');
+ redacIdx=0;renderRedac();
+}
+function setRedacSub(id,el){var t=document.querySelectorAll('#redac-tabs .stab');for(var i=0;i<t.length;i++)t[i].classList.remove('on');el.classList.add('on');redacSub=id;redacIdx=0;renderRedac()}
+function redacList(){return redacSub==='all'?REDAC:REDAC.filter(function(r){return r.sub===redacSub})}
+function renderRedac(){
+ var list=redacList();if(!list.length){document.getElementById('redac-area').innerHTML='';return}
+ if(redacIdx>=list.length)redacIdx=0;
+ var r=list[redacIdx];var sname=(function(){var s=SUB.find(function(x){return x.id===r.sub});return s?s.i+' '+s.n:r.sub})();
+ document.getElementById('redac-area').innerHTML=
+  '<div class="rdc au"><div class="rdc-meta"><span class="rdc-sub" style="background:'+r.col+'22;color:'+r.col+'">'+sname+'</span><span class="rdc-type">'+r.type+'</span></div>'+
+  '<div class="rdc-q">'+r.q+'</div><div class="rdc-cons">📋 '+r.cons+'</div>'+
+  '<textarea class="rdc-ta" id="rdc-ta" placeholder="Écris ta réponse ici, comme le jour du brevet..." oninput="document.getElementById(\'rdc-wc\').textContent=this.value.trim().split(/\\s+/).filter(Boolean).length+\' mots\'"></textarea>'+
+  '<div class="rdc-wc" id="rdc-wc">0 mots</div>'+
+  '<div class="rdc-btns"><button class="rbtn" onclick="revealRedac()">✅ J\'ai fini, voir le corrigé</button><button class="rbtn2" onclick="nextRedac()">Autre sujet →</button></div>'+
+  '<div class="rdc-reveal" id="rdc-reveal">'+
+   '<div class="rdc-box rdc-method"><h4>🧭 La méthode</h4><ol>'+r.method.map(function(m){return '<li>'+m+'</li>'}).join('')+'</ol></div>'+
+   '<div class="rdc-box rdc-model"><h4>✅ Exemple de réponse rédigée</h4><p>'+r.model.replace(/\n/g,'<br>')+'</p></div>'+
+   '<div style="font-size:.82rem;color:var(--t2);margin:6px 0 4px">Compare avec ta réponse — comment tu t\'es senti ?</div>'+
+   '<div class="rdc-self"><button class="rbtn2" onclick="redacDone(true)">💪 Plutôt réussi</button><button class="rbtn2" onclick="redacDone(false)">📚 À retravailler</button></div>'+
+  '</div></div>';
+}
+function revealRedac(){document.getElementById('rdc-reveal').classList.add('show');document.getElementById('rdc-reveal').scrollIntoView({behavior:'smooth',block:'nearest'})}
+function nextRedac(){var list=redacList();redacIdx=(redacIdx+1)%list.length;renderRedac();window.scrollTo({top:0,behavior:'smooth'})}
+function redacDone(ok){
+ addXP(ok?25:12,ok?'✍️ Belle rédac ! +25 XP':'✍️ Bon entraînement ! +12 XP');cheer('m-redac');
+ if(G.routine){var rt=G.routine.tasks.find(function(t){return t.act==='redac'&&!t.done});if(rt){rt.done=true;G.routine.doneMin=G.routine.tasks.reduce(function(a,x){return a+(x.done?x.min:0)},0)}}
+ sv();toast(ok?'🎉':'👍',ok?'Continue comme ça !':'Relis le corrigé et réessaie un autre sujet');
+ nextRedac();
+}
+
 // ============================================================ POMODORO
 var pW=25,pB=5,pRun=false,pBrk=false,pSec=0,pTot=0,pInt=null;
 function setPM(w,b,el,lbl){pW=w;pB=b;var m=document.querySelectorAll('.pmode');for(var i=0;i<m.length;i++)m[i].classList.remove('on');el.classList.add('on');resetPomo();pTot=w*60;document.getElementById('pt').textContent=fmt(w*60);document.getElementById('plbl').textContent=lbl}
@@ -1002,8 +1119,11 @@ function openSS(id){
  document.getElementById('shco').textContent='Coefficient '+s.c+' au brevet';
  var h=document.getElementById('shero');h.style.background='linear-gradient(135deg,'+s.col+'22,'+s.col+'0a)';h.style.border='1px solid '+s.col+'44';
  placeMascot('m-ss','idle');
- document.getElementById('m-ss-msg').textContent=sc>=14?'Tu gères bien '+s.n+' ! On vise l\'excellence 🚀':sc>=10?'Bon niveau en '+s.n+'. Encore quelques quiz et tu décolles 💪':'C\'est une priorité ! Quelques minutes par jour et ça remonte vite 🎯';
- document.getElementById('smg').innerHTML=s.t.map(function(t){var m=G.ms[id][t]||30;return '<div class="mi"><div class="min">'+t+'</div><div class="mib"><div class="mif" style="width:'+m+'%;background:'+s.col+'"></div></div><div class="mip" style="color:'+s.col+'">'+m+'%</div></div>'}).join('');
+ // points fort / faible par thème
+ var themes=s.t.map(function(t){return {t:t,m:G.ms[id][t]||30}}).sort(function(a,b){return a.m-b.m});
+ var weak=themes[0],strong=themes[themes.length-1];
+ document.getElementById('m-ss-msg').innerHTML='En <b>'+s.n+'</b>, ton point fort c\'est <b style="color:'+s.col+'">'+strong.t+'</b> ('+strong.m+'%). À retravailler en priorité : <b style="color:#fb7185">'+weak.t+'</b> ('+weak.m+'%). Lance un quiz pour faire monter tes %.';
+ document.getElementById('smg').innerHTML=themes.slice().sort(function(a,b){return b.m-a.m}).map(function(o){return '<div class="mi"><div class="min">'+o.t+'</div><div class="mib"><div class="mif" style="width:'+o.m+'%;background:'+s.col+'"></div></div><div class="mip" style="color:'+s.col+'">'+o.m+'%</div></div>'}).join('');
  document.getElementById('stips').innerHTML=subTips(id,s).map(function(t){return '<div class="tip"><div class="tip-i">'+t.i+'</div><div class="tip-t">'+t.t+'</div></div>'}).join('');
  var el=document.getElementById('ss');el.classList.add('open');el.style.display='block';window.scrollTo(0,0);
 }
@@ -1115,6 +1235,7 @@ function showTab(tab,btn){
  if(tab==='quiz'){renderQTabs();placeMascot('m-quiz','idle')}
  if(tab==='fiches')renderFCTabs();
  if(tab==='pomo')renderPomo();
+ if(tab==='redac'){renderRedacTabs();placeMascot('m-redac','idle')}
  if(tab==='dash'){renderDash();placeMascot('m-dash','happy')}
  window.scrollTo(0,0);
 }

@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BREVET MASTER — Réussis ton brevet</title>
+<style>
+:root{
+  --bg:#0a0e1f;--bg2:#0e1430;
+  --card:rgba(22,28,52,0.62);--card2:rgba(30,38,68,0.55);
+  --b:rgba(255,255,255,0.08);--bh:rgba(255,255,255,0.16);
+  --p:#2dd4bf;--p2:#38bdf8;--rose:#fb7185;--amber:#fbbf24;--violet:#a78bfa;--green:#34d399;
+  --t:#eef2ff;--t2:#9aa6c8;--t3:#6b769b;
+  --ok:#34d399;--ko:#fb7185;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI Variable','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ===== ANIMATED AURORA BACKGROUND ===== */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;background:
+  radial-gradient(1200px 800px at 10% 10%,rgba(45,212,191,.12),transparent 55%),
+  radial-gradient(1000px 700px at 90% 20%,rgba(251,113,133,.12),transparent 55%),
+  radial-gradient(1100px 900px at 50% 100%,rgba(167,139,250,.13),transparent 55%),
+  linear-gradient(160deg,#0a0e1f,#0c1228 60%,#0a0f24)}
+.aurora::before,.aurora::after{content:'';position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 22s ease-in-out infinite}
+.aurora::before{width:560px;height:560px;background:radial-gradient(circle,rgba(56,189,248,.4),transparent 70%);top:-160px;left:-120px}
+.aurora::after{width:640px;height:640px;background:radial-gradient(circle,rgba(251,191,36,.28),transparent 70%);bottom:-220px;right:-160px;animation-duration:28s;animation-direction:reverse}
+.grain{position:fixed;inset:0;z-index:0;opacity:.035;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{position:absolute;background:#fff;border-radius:50%;opacity:.5;animation:tw 3s ease-in-out infinite}
+
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,40px) scale(1.1)}66%{transform:translate(-40px,30px) scale(.95)}}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:.7}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes floatM{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes glow{0%,100%{box-shadow:0 0 24px rgba(45,212,191,.25)}50%{box-shadow:0 0 46px rgba(45,212,191,.5),0 0 90px rgba(56,189,248,.18)}}
+@keyframes confetti{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(620deg);opacity:0}}
+@keyframes countUp{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+.au{animation:fadeUp .4s ease}
+
+/* ===== SCREENS ===== */
+.screen{display:none;position:relative;z-index:2;min-height:100vh}
+.screen.active{display:block;animation:fadeUp .45s ease}
+#so{display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 18px;min-height:100vh}
+#so.active{display:flex}
+
+/* ===== ONBOARDING ===== */
+.logo{font-size:3.4rem;font-weight:900;letter-spacing:-2px;line-height:.95;text-align:center;background:linear-gradient(110deg,#2dd4bf,#38bdf8,#a78bfa,#fb7185);background-size:280%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;margin-bottom:6px}
+.logo-sub{color:var(--t2);font-size:.98rem;margin-bottom:30px;text-align:center}
+.ob{background:var(--card);border:1px solid var(--bh);border-radius:26px;padding:32px;max-width:520px;width:100%;backdrop-filter:blur(22px);box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.ob-step{display:none}.ob-step.active{display:block;animation:fadeUp .35s ease}
+.ob-step h2{font-size:1.35rem;font-weight:800;margin-bottom:6px}
+.ob-step p{color:var(--t2);font-size:.9rem;margin-bottom:22px;line-height:1.5}
+.dots{display:flex;gap:7px;justify-content:center;margin-bottom:24px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--b);transition:.3s}
+.dot.on{background:var(--p);width:26px;border-radius:4px}
+label{display:block;font-size:.74rem;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+input[type=text],select{width:100%;padding:13px 15px;background:rgba(10,14,30,.6);border:1px solid var(--b);border-radius:13px;color:var(--t);font-size:.95rem;margin-bottom:16px;transition:.2s}
+input[type=text]:focus,select:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(45,212,191,.14)}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cb{padding:15px 12px;background:rgba(10,14,30,.45);border:2px solid var(--b);border-radius:15px;color:var(--t);cursor:pointer;text-align:center;font-size:.88rem;font-weight:600;transition:.2s}
+.cb em{font-style:normal;font-size:1.7rem;display:block;margin-bottom:5px}
+.cb small{font-weight:400;color:var(--t2);font-size:.72rem}
+.cb:hover{border-color:var(--p);transform:translateY(-2px)}
+.cb.on{border-color:var(--p);background:rgba(45,212,191,.12)}
+.btn{width:100%;padding:15px;background:linear-gradient(120deg,var(--p),var(--p2));border:none;border-radius:14px;color:#04221f;font-size:1rem;font-weight:800;cursor:pointer;transition:.2s;margin-top:6px;box-shadow:0 10px 30px rgba(45,212,191,.25)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(45,212,191,.4)}
+.range-row{display:flex;align-items:center;gap:11px;margin-bottom:10px;background:rgba(10,14,30,.4);padding:10px 13px;border-radius:13px}
+.range-row em{font-style:normal;font-size:1.25rem}
+.range-info{flex:1;min-width:0}
+.range-n{font-size:.85rem;font-weight:700}
+.range-c{font-size:.7rem;color:var(--t3)}
+input[type=range]{width:84px;accent-color:var(--p)}
+.range-v{font-size:.82rem;font-weight:800;min-width:32px;text-align:right}
+.diag-q{font-size:1.05rem;font-weight:700;line-height:1.45;margin:6px 0 16px}
+.diag-ch{display:flex;flex-direction:column;gap:9px}
+.diag-b{padding:13px 15px;border-radius:12px;background:rgba(10,14,30,.5);border:2px solid var(--b);color:var(--t);cursor:pointer;text-align:left;font-size:.92rem;transition:.16s}
+.diag-b:hover{border-color:var(--p);transform:translateX(3px)}
+.diag-prog{height:5px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;margin-bottom:18px}
+.diag-prog>div{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:4px;transition:.4s}
+.lvtag{display:inline-block;font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:20px;background:rgba(167,139,250,.18);color:var(--violet);border:1px solid rgba(167,139,250,.3);margin-left:6px;vertical-align:middle}
+
+/* ===== HEADER ===== */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:90;background:rgba(10,14,31,.72);backdrop-filter:blur(24px);border-bottom:1px solid var(--b);height:62px;display:flex;align-items:center;padding:0 16px;gap:12px}
+.hlogo{font-weight:900;font-size:1.05rem;letter-spacing:-.5px;background:linear-gradient(110deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.hav{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--p),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.88rem;color:#04221f;flex-shrink:0}
+.hinfo{flex:1;min-width:0}
+.hname{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hlv{font-size:.7rem;color:var(--p);font-weight:700}
+.jpill{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(251,113,133,.16),rgba(251,191,36,.12));border:1px solid rgba(251,113,133,.3);border-radius:13px;padding:5px 11px;flex-shrink:0;line-height:1}
+.jpill b{font-size:1.05rem;font-weight:900;background:linear-gradient(110deg,var(--rose),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.jpill span{font-size:.56rem;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.streak{display:flex;align-items:center;gap:4px;background:rgba(251,191,36,.13);border:1px solid rgba(251,191,36,.28);padding:5px 9px;border-radius:20px;font-size:.78rem;font-weight:800;color:var(--amber);flex-shrink:0}
+.xptiny{position:absolute;left:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--p),var(--p2));transition:width .5s}
+
+/* ===== NAV ===== */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:90;background:rgba(10,14,31,.82);backdrop-filter:blur(24px);border-top:1px solid var(--b);display:flex;padding:6px 0 9px}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;background:none;border:none;color:var(--t3);cursor:pointer;font-size:.64rem;font-weight:700;transition:.2s}
+.nb .ni{font-size:1.3rem;transition:.2s}
+.nb.on{color:var(--p)}
+.nb.on .ni{transform:translateY(-2px) scale(1.08);filter:drop-shadow(0 0 9px var(--p))}
+
+/* ===== MAIN ===== */
+.main{padding:74px 16px 80px;max-width:840px;margin:0 auto}
+.tc{display:none}.tc.active{display:block;animation:fadeUp .35s ease}
+.sec{font-size:.74rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:1.2px;margin:22px 4px 10px;display:flex;align-items:center;gap:6px}
+.card{background:var(--card);border:1px solid var(--b);border-radius:18px;padding:17px;backdrop-filter:blur(14px)}
+
+/* ===== MASCOT ===== */
+.mascot{width:74px;height:74px;flex-shrink:0;animation:floatM 4s ease-in-out infinite;cursor:pointer;transition:transform .2s}
+.mascot:active{transform:scale(.92)}
+.mascot.happy{animation:bob .5s ease 2}
+.m-eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.mascot-row{display:flex;align-items:flex-start;gap:13px;background:linear-gradient(135deg,rgba(45,212,191,.1),rgba(167,139,250,.08));border:1px solid rgba(45,212,191,.2);border-radius:20px;padding:14px 15px;margin-bottom:18px}
+.bubble{flex:1;position:relative;background:rgba(10,14,30,.55);border:1px solid var(--b);border-radius:15px;border-top-left-radius:4px;padding:12px 14px;min-height:60px}
+.bubble:before{content:'';position:absolute;left:-7px;top:14px;width:0;height:0;border:7px solid transparent;border-right-color:rgba(10,14,30,.55);border-left:0}
+.bubble .who{font-size:.68rem;font-weight:800;color:var(--p);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.bubble .msg{font-size:.88rem;line-height:1.5;color:var(--t)}
+.bubble .more{margin-top:8px;font-size:.74rem;color:var(--p2);background:none;border:1px solid var(--b);border-radius:9px;padding:5px 10px;cursor:pointer;font-weight:700}
+.bubble .more:hover{border-color:var(--p2)}
+
+.hello{font-size:1.45rem;font-weight:800;margin-bottom:2px}
+.hello b{background:linear-gradient(110deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hellosub{color:var(--t2);font-size:.86rem;margin-bottom:16px}
+
+/* ===== ROUTINE ===== */
+.routine{background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(45,212,191,.08));border:1px solid rgba(56,189,248,.22);border-radius:20px;padding:18px;margin-bottom:18px}
+.rt-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.rt-title{font-size:1rem;font-weight:800}
+.rt-focus{font-size:.78rem;color:var(--p2);font-weight:700}
+.rt-goal{font-size:.78rem;color:var(--t2);margin-bottom:12px}
+.rt-ring{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.rt-circle{position:relative;width:64px;height:64px;flex-shrink:0}
+.rt-circle svg{transform:rotate(-90deg)}
+.rt-circle .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:900}
+.rt-stat{flex:1}
+.rt-stat b{font-size:1.5rem;font-weight:900}
+.rt-stat span{font-size:.76rem;color:var(--t2)}
+.task{display:flex;align-items:center;gap:11px;padding:11px 12px;background:rgba(10,14,30,.4);border:1px solid var(--b);border-radius:13px;margin-bottom:8px;transition:.2s}
+.task.done{opacity:.55}
+.task.done .task-l{text-decoration:line-through}
+.task-check{width:24px;height:24px;border-radius:8px;border:2px solid var(--b);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:.2s}
+.task.done .task-check{background:var(--green);border-color:var(--green);color:#04221f}
+.task-ic{font-size:1.2rem}
+.task-info{flex:1;min-width:0}
+.task-l{font-size:.87rem;font-weight:700}
+.task-m{font-size:.72rem;color:var(--t3)}
+.task-go{font-size:.72rem;font-weight:800;color:var(--p2);background:rgba(45,212,191,.1);border:1px solid var(--b);border-radius:9px;padding:5px 10px;cursor:pointer}
+
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:6px}
+.sc{background:var(--card);border:1px solid var(--b);border-radius:15px;padding:13px 8px;text-align:center}
+.sv{font-size:1.5rem;font-weight:900;background:linear-gradient(120deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sl{font-size:.64rem;color:var(--t2);margin-top:2px;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+
+.mc{background:linear-gradient(135deg,rgba(167,139,250,.13),rgba(251,113,133,.08));border:1px solid rgba(167,139,250,.24);border-radius:20px;padding:20px;margin-bottom:6px;position:relative;overflow:hidden}
+.mc-lbl{font-size:.72rem;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.mc-score{font-size:2.6rem;font-weight:900;line-height:1.05;margin:3px 0}
+.mc-name{font-size:.96rem;font-weight:800;margin-bottom:12px}
+.mc-bar{background:rgba(10,14,30,.5);border-radius:7px;height:9px;overflow:hidden;margin-bottom:7px;position:relative}
+.mc-bar>div{height:100%;border-radius:7px;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.mc-tick{position:absolute;top:0;width:2px;height:100%;background:rgba(255,255,255,.25)}
+.mc-ticks{display:flex;justify-content:space-between;font-size:.64rem;color:var(--t3)}
+.mc-split{display:flex;gap:8px;margin-top:13px}
+.mc-half{flex:1;background:rgba(10,14,30,.4);border-radius:12px;padding:10px}
+.mc-half .h{font-size:.66rem;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.mc-half .v{font-size:1.15rem;font-weight:900;margin-top:2px}
+.mc-half .w{font-size:.62rem;color:var(--t3)}
+
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scard{background:var(--card);border:1px solid var(--b);border-radius:15px;padding:13px;cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.scard:before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--sc)}
+.scard:hover{transform:translateY(-3px);border-color:var(--bh)}
+.st{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.si{font-size:1.4rem}
+.ss{font-size:1.05rem;font-weight:900;color:var(--sc)}
+.sn{font-size:.83rem;font-weight:700}
+.sk{font-size:.66rem;color:var(--t3);margin-bottom:8px}
+.sb{background:rgba(10,14,30,.5);border-radius:3px;height:4px;overflow:hidden}
+.sbf{height:100%;border-radius:3px;transition:width .9s ease}
+
+.tip{background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.14);border-radius:13px;padding:12px 13px;margin-bottom:9px;display:flex;gap:10px}
+.tip-i{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.tip-t{font-size:.85rem;line-height:1.5;color:var(--t2)}
+.tip-t b{color:var(--t)}
+
+.stabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+.stab{padding:7px 13px;border-radius:20px;background:var(--card);border:1px solid var(--b);color:var(--t2);cursor:pointer;transition:.2s;font-size:.8rem;font-weight:600}
+.stab.on{background:var(--p);border-color:var(--p);color:#04221f;font-weight:800}
+.diffr{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.db{padding:7px 14px;border-radius:20px;background:var(--card);border:1px solid var(--b);color:var(--t2);cursor:pointer;font-size:.8rem;font-weight:600;transition:.2s}
+.db.on.e{background:rgba(52,211,153,.16);border-color:var(--green);color:var(--green)}
+.db.on.m{background:rgba(251,191,36,.16);border-color:var(--amber);color:var(--amber)}
+.db.on.h{background:rgba(251,113,133,.16);border-color:var(--rose);color:var(--rose)}
+.db.on.x{background:rgba(167,139,250,.16);border-color:var(--violet);color:var(--violet)}
+.db.on.a{background:rgba(56,189,248,.16);border-color:var(--p2);color:var(--p2)}
+.qcard{background:var(--card);border:1px solid var(--b);border-radius:20px;padding:22px;margin-bottom:13px;backdrop-filter:blur(14px)}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.qnum{font-size:.76rem;color:var(--t2);font-weight:600}
+.qtimer{font-size:.86rem;font-weight:800;color:var(--amber);display:flex;align-items:center;gap:4px}
+.qprog{background:rgba(10,14,30,.5);height:4px;border-radius:4px;margin-bottom:18px;overflow:hidden}
+.qprog>div{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:4px;transition:.3s}
+.qdiff{display:inline-block;font-size:.66rem;padding:3px 10px;border-radius:20px;font-weight:800;margin-bottom:11px}
+.qq{font-size:1.08rem;font-weight:700;line-height:1.5;margin-bottom:18px}
+.qch{display:flex;flex-direction:column;gap:8px}
+.qb{padding:13px 15px;border-radius:12px;background:rgba(10,14,30,.45);border:2px solid var(--b);color:var(--t);cursor:pointer;text-align:left;font-size:.9rem;transition:.16s}
+.qb:hover:not(.lk){border-color:var(--p);transform:translateX(3px)}
+.qb.ok{border-color:var(--ok);background:rgba(52,211,153,.12);color:var(--ok)}
+.qb.ko{border-color:var(--ko);background:rgba(251,113,133,.12);color:var(--ko)}
+.qb.lk{cursor:default}
+.expl{display:none;margin-top:13px;padding:13px;background:rgba(56,189,248,.07);border-left:3px solid var(--p2);border-radius:11px;font-size:.85rem;color:var(--t2);line-height:1.55}
+.expl.show{display:block;animation:fadeUp .3s ease}
+.expl b{color:var(--t)}
+.qnext{width:100%;padding:13px;background:linear-gradient(120deg,var(--p),var(--p2));border:none;border-radius:12px;color:#04221f;font-size:.92rem;font-weight:800;cursor:pointer;display:none;margin-top:12px}
+.qnext.show{display:block}
+.qres{text-align:center;padding:32px 14px;display:none}
+.qres.show{display:block;animation:pop .5s ease}
+.re{font-size:4.6rem;display:block;animation:float 2s ease-in-out infinite;margin-bottom:8px}
+.rs{font-size:3rem;font-weight:900;background:linear-gradient(120deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.rm{font-size:1.05rem;font-weight:700;margin-bottom:18px}
+.rd{background:var(--card);border:1px solid var(--b);border-radius:15px;padding:16px;margin-bottom:18px;text-align:left}
+.rrow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--b);font-size:.88rem}
+.rrow:last-child{border-bottom:none}
+.rbtn{padding:12px 24px;background:linear-gradient(120deg,var(--p),var(--p2));border:none;border-radius:13px;color:#04221f;font-size:.92rem;font-weight:800;cursor:pointer;margin:4px}
+.rbtn2{padding:12px 24px;background:var(--card2);border:1px solid var(--b);border-radius:13px;color:var(--t);font-size:.92rem;font-weight:700;cursor:pointer;margin:4px}
+
+.fcwrap{perspective:1200px;margin-bottom:16px}
+.fc{width:100%;min-height:210px;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.22,1,.36,1);cursor:pointer;border-radius:20px}
+.fc.flip{transform:rotateY(180deg)}
+.fcf,.fcb{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.fcf{background:var(--card);border:1px solid var(--b)}
+.fcb{background:linear-gradient(135deg,rgba(45,212,191,.14),rgba(167,139,250,.1));border:1px solid rgba(45,212,191,.3);transform:rotateY(180deg)}
+.fc-hint{font-size:.7rem;color:var(--t3);margin-bottom:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.fc-q{font-size:1.1rem;font-weight:800;line-height:1.4}
+.fc-a{font-size:.98rem;line-height:1.55}
+.fcnav{display:flex;gap:9px;justify-content:center}
+.fcbtn{padding:10px 20px;border-radius:12px;border:1px solid var(--b);background:var(--card);color:var(--t);cursor:pointer;font-size:.85rem;font-weight:700;transition:.2s}
+.fcbtn.ok{border-color:var(--green);color:var(--green)}
+.fcbtn.ko{border-color:var(--rose);color:var(--rose)}
+.fcc{text-align:center;font-size:.8rem;color:var(--t2);margin-bottom:12px}
+
+.pmodes{display:flex;gap:7px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+.pmode{padding:8px 16px;border-radius:20px;background:var(--card);border:1px solid var(--b);color:var(--t2);cursor:pointer;font-size:.8rem;font-weight:600;transition:.2s}
+.pmode.on{background:var(--p);border-color:var(--p);color:#04221f;font-weight:800}
+.pwrap{text-align:center;padding:14px 0}
+.pcirc{width:208px;height:208px;margin:0 auto 22px;position:relative}
+.pcirc svg{width:100%;height:100%;transform:rotate(-90deg)}
+.pbg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:9}
+.pfg{fill:none;stroke-width:9;stroke-linecap:round;stroke:var(--p);transition:stroke-dashoffset .5s linear,stroke .3s}
+.ptime{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pt{font-size:2.7rem;font-weight:900;font-variant-numeric:tabular-nums}
+.pl{font-size:.78rem;color:var(--t2);margin-top:2px}
+.pbtns{display:flex;gap:9px;justify-content:center;margin-bottom:18px}
+.pbtn{padding:12px 26px;border-radius:13px;font-size:.92rem;font-weight:800;cursor:pointer;transition:.2s}
+.pbtn.start{background:linear-gradient(120deg,var(--p),var(--p2));border:none;color:#04221f}
+.pbtn.stop{background:var(--card2);border:1px solid var(--b);color:var(--t)}
+.psess{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.ps{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.1);transition:.3s}
+.ps.done{background:var(--p);box-shadow:0 0 8px var(--p)}
+
+.phero{background:linear-gradient(135deg,rgba(45,212,191,.16),rgba(167,139,250,.1));border:1px solid rgba(45,212,191,.22);border-radius:22px;padding:24px;margin-bottom:16px;text-align:center}
+.pav{width:72px;height:72px;border-radius:22px;margin:0 auto 12px;background:linear-gradient(135deg,var(--p),var(--violet));display:flex;align-items:center;justify-content:center;font-size:1.9rem;font-weight:900;color:#04221f;animation:glow 3.5s ease-in-out infinite}
+.pn{font-size:1.4rem;font-weight:900}
+.psub{color:var(--t2);font-size:.85rem;margin:3px 0 13px}
+.badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.badge{padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:1px solid}
+.cog{background:var(--card);border:1px solid var(--b);border-radius:18px;padding:18px;margin-bottom:6px}
+.cog-h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.cog-em{font-size:2rem}
+.cog-t{font-size:1.05rem;font-weight:900}
+.cog-d{font-size:.78rem;color:var(--t2)}
+.cog-axis{margin-bottom:13px}
+.cog-lbl{display:flex;justify-content:space-between;font-size:.72rem;color:var(--t2);margin-bottom:5px;font-weight:600}
+.cog-track{height:8px;background:rgba(10,14,30,.5);border-radius:5px;position:relative;overflow:hidden}
+.cog-fill{position:absolute;top:0;bottom:0;left:0;border-radius:5px;transition:width 1s ease}
+.cog-marker{position:absolute;top:-3px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.6);transform:translateX(-50%);transition:left 1s ease}
+.styleg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:6px}
+.stylec{background:var(--card);border:1px solid var(--b);border-radius:14px;padding:13px}
+.styleti{font-size:.72rem;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px;font-weight:600}
+.stylev{font-size:.95rem;font-weight:800;margin-bottom:6px}
+.styleb{background:rgba(10,14,30,.5);border-radius:4px;height:5px;overflow:hidden}
+.stylebf{height:100%;border-radius:4px;transition:width 1s}
+.radarw{background:var(--card);border:1px solid var(--b);border-radius:18px;padding:20px;margin-bottom:6px}
+.radart{text-align:center;font-size:.92rem;font-weight:800;margin-bottom:12px}
+.hist{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--b)}
+.histic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.histin{flex:1}
+.histt{font-size:.85rem;font-weight:700}
+.hists{font-size:.72rem;color:var(--t3)}
+.histsc{font-size:.92rem;font-weight:900}
+.binfo{background:var(--card);border:1px solid var(--b);border-radius:16px;padding:16px;margin-bottom:6px}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--b);font-size:.85rem}
+.brow:last-child{border-bottom:none}
+.brow .bl{display:flex;align-items:center;gap:8px}
+.brow .bl em{font-style:normal}
+.bpts{font-weight:800;color:var(--p)}
+.bnote{font-size:.76rem;color:var(--t3);margin-top:10px;line-height:1.5}
+.cc-input{display:flex;align-items:center;gap:10px;margin-top:10px;background:rgba(10,14,30,.4);padding:11px 13px;border-radius:13px}
+.cc-input input[type=range]{flex:1}
+.cc-input b{font-size:1.05rem;font-weight:900;min-width:54px;text-align:right;color:var(--p2)}
+
+#ss{position:fixed;inset:0;z-index:80;overflow-y:auto;background:var(--bg);display:none;padding:70px 16px 90px}
+#ss.open{display:block;animation:fadeUp .35s ease}
+.back{display:flex;align-items:center;gap:6px;padding:9px 14px;background:var(--card);border:1px solid var(--b);border-radius:12px;color:var(--t);cursor:pointer;font-size:.85rem;font-weight:700;margin-bottom:16px;width:fit-content}
+.back:hover{border-color:var(--p)}
+.shero{border-radius:22px;padding:24px;margin-bottom:16px}
+.shn{font-size:1.6rem;font-weight:900}
+.shsc{font-size:3.6rem;font-weight:900;line-height:1}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:6px}
+.mi{background:var(--card);border:1px solid var(--b);border-radius:13px;padding:12px}
+.min{font-size:.76rem;color:var(--t2);margin-bottom:7px}
+.mib{background:rgba(10,14,30,.5);border-radius:4px;height:6px;overflow:hidden;margin-bottom:4px}
+.mif{height:100%;border-radius:4px;transition:width 1s}
+.mip{font-size:.8rem;font-weight:800;margin-top:3px}
+
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-120%);z-index:500;background:var(--card);border:1px solid var(--p);border-radius:14px;padding:11px 16px;display:flex;align-items:center;gap:9px;transition:transform .35s cubic-bezier(.22,1,.36,1);max-width:90vw;backdrop-filter:blur(16px);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.ti{font-size:1.25rem}.tt{font-size:.85rem;font-weight:600;white-space:nowrap}
+.xpp{position:fixed;top:48%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:400;background:linear-gradient(120deg,var(--p),var(--p2));border-radius:18px;padding:16px 30px;text-align:center;box-shadow:0 20px 60px rgba(45,212,191,.5);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.xpp.show{transform:translate(-50%,-50%) scale(1)}
+.xppt{font-size:1.6rem;font-weight:900;color:#04221f}
+.xpps{font-size:.82rem;color:rgba(4,34,31,.75);font-weight:700}
+.lvo{position:fixed;inset:0;z-index:600;background:rgba(5,8,18,.85);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;text-align:center;padding:20px}
+.lvo.show{display:flex}
+.lvc{background:var(--card);border:2px solid var(--p);border-radius:26px;padding:40px 32px;animation:countUp .5s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(20px)}
+.lve{font-size:4.6rem;display:block;margin-bottom:12px;animation:float 1.5s ease-in-out infinite}
+.lvt{font-size:1.8rem;font-weight:900;background:linear-gradient(120deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lvs{color:var(--t2);margin-top:7px;font-size:.9rem}
+.lvbtn{margin-top:20px;padding:12px 28px;background:linear-gradient(120deg,var(--p),var(--p2));border:none;border-radius:13px;color:#04221f;font-size:.92rem;font-weight:800;cursor:pointer}
+.cf{position:fixed;width:9px;height:9px;top:-12px;z-index:9999;border-radius:2px;animation:confetti 3s ease-in forwards;pointer-events:none}
+
+@media(max-width:480px){.srow{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:1fr}.styleg{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--b);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="aurora"></div><div class="grain"></div><div class="stars" id="stars"></div>
+
+<div class="toast" id="toast"><span class="ti" id="ti">🎉</span><span class="tt" id="tt"></span></div>
+<div class="xpp" id="xpp"><div class="xppt" id="xppt">+50 XP</div><div class="xpps" id="xpps"></div></div>
+<div class="lvo" id="lvo"><div class="lvc"><span class="lve">🎊</span><div class="lvt" id="lvt">Niveau 2 !</div><div class="lvs" id="lvs"></div><button class="lvbtn" onclick="closeLV()">Continuer →</button></div></div>
+
+<!-- ONBOARDING -->
+<div id="so" class="screen active">
+  <div class="logo">BREVET<br>MASTER</div>
+  <div class="logo-sub">Ton coach perso pour décrocher le brevet 🎓</div>
+  <div class="dots" id="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="ob">
+    <div class="ob-step active" id="os1">
+      <div style="display:flex;justify-content:center;margin-bottom:8px" id="introMascot"></div>
+      <h2 style="text-align:center">Salut, moi c'est Zo !</h2>
+      <p style="text-align:center">Je vais t'accompagner jusqu'au brevet. D'abord, dis-moi qui tu es.</p>
+      <label>Ton prénom</label>
+      <input type="text" id="iname" placeholder="Ex: Lucas" maxlength="20">
+      <label>Ta classe</label>
+      <select id="iclass"><option value="3e">3ème — je passe le brevet cette année</option><option value="4e">4ème — je prends de l'avance</option><option value="5e">5ème — je commence tôt</option></select>
+      <label>Mention que tu vises</label>
+      <select id="igoal"><option value="r">Avoir le brevet (10+)</option><option value="ab">Assez Bien (12+)</option><option value="b" selected>Bien (14+)</option><option value="tb">Très Bien (16+)</option></select>
+      <button class="btn" onclick="os(2)">Continuer →</button>
+    </div>
+    <div class="ob-step" id="os2">
+      <h2>🧠 Test : comment apprends-tu ?</h2>
+      <p>5 situations, réponds spontanément. Je vais détecter ta vraie façon d'apprendre (visuel, auditif, lecture, pratique).</p>
+      <div class="diag-prog"><div id="lsp" style="width:0%"></div></div>
+      <div id="lsarea"></div>
+    </div>
+    <div class="ob-step" id="os3">
+      <h2>🎯 Petit test de niveau</h2>
+      <p>5 questions du programme (5ᵉ, 4ᵉ, 3ᵉ) pour comprendre ton niveau et ta façon de réfléchir. Réponds naturellement !</p>
+      <div class="diag-prog"><div id="dgp" style="width:0%"></div></div>
+      <div id="dgarea"></div>
+    </div>
+    <div class="ob-step" id="os4">
+      <h2>📊 Ajuste tes notes</h2>
+      <p>J'ai estimé ton niveau. Affine si tu connais tes moyennes — ça compte pour le contrôle continu (40% du brevet !).</p>
+      <div id="rinit" style="max-height:300px;overflow-y:auto;margin-bottom:14px"></div>
+      <button class="btn" onclick="finishOB()">C'est parti ! 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="sa" class="screen">
+  <header class="hdr">
+    <div class="hlogo">BM</div>
+    <div class="hav" id="hav">?</div>
+    <div class="hinfo"><div class="hname" id="hn">—</div><div class="hlv" id="hl">Niveau 1</div></div>
+    <div class="streak" id="stk">🔥 <span id="stkn">0</span></div>
+    <div class="jpill"><b id="jdays">—</b><span>Jours brevet</span></div>
+    <div class="xptiny" id="xptiny" style="width:0%"></div>
+  </header>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="tc active" id="t-dash">
+      <div class="hello">Salut <b id="dn"></b> 👋</div>
+      <div class="hellosub" id="dsub"></div>
+      <div class="mascot-row">
+        <div id="m-dash"></div>
+        <div class="bubble"><div class="who">Zo • ton coach</div><div class="msg" id="m-dash-msg">...</div><button class="more" onclick="newAdvice()">💬 Un autre conseil</button></div>
+      </div>
+      <div class="routine">
+        <div class="rt-top"><div class="rt-title">📅 Ta routine du jour</div><div class="rt-focus" id="rt-focus"></div></div>
+        <div class="rt-goal" id="rt-goal"></div>
+        <div class="rt-ring">
+          <div class="rt-circle">
+            <svg width="64" height="64"><circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="7"/><circle id="rt-ringfg" cx="32" cy="32" r="27" fill="none" stroke="url(#rgrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6"/><defs><linearGradient id="rgrad"><stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient></defs></svg>
+            <div class="pct" id="rt-pct">0%</div>
+          </div>
+          <div class="rt-stat"><b id="rt-min">0</b><span> / <span id="rt-goalmin">20</span> min aujourd'hui</span></div>
+        </div>
+        <div id="rt-tasks"></div>
+      </div>
+      <div class="srow">
+        <div class="sc"><div class="sv" id="stq">0</div><div class="sl">Questions</div></div>
+        <div class="sc"><div class="sv" id="stc">0%</div><div class="sl">Précision</div></div>
+        <div class="sc"><div class="sv" id="sts">0</div><div class="sl">Jours actifs</div></div>
+        <div class="sc"><div class="sv" id="stx">1</div><div class="sl">Niveau</div></div>
+      </div>
+      <div class="sec">🎓 Ma mention projetée</div>
+      <div class="mc">
+        <div class="mc-lbl">Note finale estimée au brevet</div>
+        <div class="mc-score" id="mcs">—</div>
+        <div class="mc-name" id="mcn">...</div>
+        <div class="mc-bar"><div id="mcb" style="width:0%"></div><div class="mc-tick" style="left:50%"></div><div class="mc-tick" style="left:60%"></div><div class="mc-tick" style="left:70%"></div><div class="mc-tick" style="left:80%"></div></div>
+        <div class="mc-ticks"><span>0</span><span>10</span><span>12</span><span>14</span><span>16</span><span>20</span></div>
+        <div class="mc-split">
+          <div class="mc-half"><div class="h">Contrôle continu</div><div class="v" id="mc-cc">—</div><div class="w">40% • toute l'année</div></div>
+          <div class="mc-half"><div class="h">Épreuves finales</div><div class="v" id="mc-ep">—</div><div class="w">60% • en juin</div></div>
+        </div>
+      </div>
+      <div class="sec">📚 Mes matières</div>
+      <div class="sg" id="dsg"></div>
+      <div class="sec">💡 Conseils pour toi</div>
+      <div id="drec"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="tc" id="t-quiz">
+      <div class="hello">Quiz <b>Adaptatif</b> ⚡</div>
+      <div class="hellosub">Questions de 5ᵉ, 4ᵉ et 3ᵉ — la difficulté s'ajuste à ton niveau.</div>
+      <div class="mascot-row" style="margin-bottom:14px"><div id="m-quiz"></div><div class="bubble"><div class="who">Zo</div><div class="msg" id="m-quiz-msg">Choisis une matière et lance-toi !</div></div></div>
+      <div class="stabs" id="qtabs"></div>
+      <div class="diffr">
+        <div class="db on a" onclick="setDiff('auto',this)">🤖 Auto</div>
+        <div class="db e" onclick="setDiff('e',this)">🟢 Facile</div>
+        <div class="db m" onclick="setDiff('m',this)">🟡 Moyen</div>
+        <div class="db h" onclick="setDiff('h',this)">🔴 Difficile</div>
+        <div class="db x" onclick="setDiff('mix',this)">🎲 Mix</div>
+      </div>
+      <div id="qarea"></div>
+      <div class="qres" id="qres">
+        <span class="re" id="re">🎉</span>
+        <div class="rs" id="rsc">8/10</div>
+        <div class="rm" id="rm"></div>
+        <div class="rd" id="rd"></div>
+        <button class="rbtn" onclick="startQuiz()">🔄 Rejouer</button>
+        <button class="rbtn2" onclick="showTab('dash',document.querySelectorAll('.nb')[0])">🏠 Accueil</button>
+      </div>
+    </div>
+
+    <!-- FICHES -->
+    <div class="tc" id="t-fiches">
+      <div class="hello">Fiches <b>Éclair</b> 🃏</div>
+      <div class="hellosub">Clique la carte pour révéler la réponse.</div>
+      <div class="stabs" id="fctabs"></div>
+      <div class="fcc" id="fcc"></div>
+      <div class="fcwrap"><div class="fc" id="fc" onclick="flipCard()">
+        <div class="fcf"><div class="fc-hint">Clique pour révéler</div><div class="fc-q" id="fcq">...</div></div>
+        <div class="fcb"><div class="fc-hint">Réponse</div><div class="fc-a" id="fca"></div></div>
+      </div></div>
+      <div class="fcnav">
+        <button class="fcbtn ko" onclick="fcAns(false)">✗ À revoir</button>
+        <button class="fcbtn" onclick="fcSkip()">⏭ Passer</button>
+        <button class="fcbtn ok" onclick="fcAns(true)">✓ Su</button>
+      </div>
+    </div>
+
+    <!-- TIMER -->
+    <div class="tc" id="t-pomo">
+      <div class="hello">Timer <b>Focus</b> ⏱</div>
+      <div class="hellosub">Travaille concentré, fais des pauses. Méthode Pomodoro.</div>
+      <div class="pmodes">
+        <div class="pmode on" onclick="setPM(25,5,this,'Focus')">25 / 5</div>
+        <div class="pmode" onclick="setPM(50,10,this,'Focus long')">50 / 10</div>
+        <div class="pmode" onclick="setPM(15,3,this,'Révision flash')">15 / 3</div>
+      </div>
+      <div class="pwrap">
+        <div class="pcirc">
+          <svg viewBox="0 0 100 100"><circle class="pbg" cx="50" cy="50" r="42"/><circle class="pfg" id="pring" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="0"/></svg>
+          <div class="ptime"><div class="pt" id="pt">25:00</div><div class="pl" id="plbl">Focus</div></div>
+        </div>
+        <div class="psess" id="psess"></div>
+        <div class="pbtns"><button class="pbtn start" id="pbtn" onclick="togglePomo()">▶ Démarrer</button><button class="pbtn stop" onclick="resetPomo()">↺</button></div>
+      </div>
+      <div class="card"><div style="font-size:.7rem;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:9px">⏱ Sessions du jour</div><div id="plog"></div></div>
+    </div>
+
+    <!-- PROFIL -->
+    <div class="tc" id="t-prof">
+      <div class="phero">
+        <div class="pav" id="pav">?</div>
+        <div class="pn" id="pn">—</div>
+        <div class="psub" id="psub"></div>
+        <div class="badges" id="pbadges"></div>
+      </div>
+      <div class="sec">🧠 Ta façon de réfléchir</div>
+      <div class="cog">
+        <div class="cog-h"><div class="cog-em" id="cog-em">🧩</div><div><div class="cog-t" id="cog-t">Analyse en cours...</div><div class="cog-d" id="cog-d">Fais quelques quiz pour affiner ton profil.</div></div></div>
+        <div class="cog-axis"><div class="cog-lbl"><span>🐢 Réfléchi</span><span>Rapide ⚡</span></div><div class="cog-track"><div class="cog-fill" id="ax-speed" style="background:linear-gradient(90deg,var(--p2),var(--p));width:50%"></div><div class="cog-marker" id="mk-speed" style="left:50%"></div></div></div>
+        <div class="cog-axis"><div class="cog-lbl"><span>📚 Mémoire</span><span>Logique 🔢</span></div><div class="cog-track"><div class="cog-fill" id="ax-logic" style="background:linear-gradient(90deg,var(--violet),var(--amber));width:50%"></div><div class="cog-marker" id="mk-logic" style="left:50%"></div></div></div>
+        <div class="cog-axis"><div class="cog-lbl"><span>🎯 Prudent</span><span>Audacieux 🚀</span></div><div class="cog-track"><div class="cog-fill" id="ax-risk" style="background:linear-gradient(90deg,var(--green),var(--rose));width:50%"></div><div class="cog-marker" id="mk-risk" style="left:50%"></div></div></div>
+      </div>
+      <div class="sec">🎨 Style d'apprentissage</div>
+      <div class="styleg" id="pstyle"></div>
+      <div class="sec">📡 Carte des compétences</div>
+      <div class="radarw"><div class="radart">Niveau par matière</div><canvas id="radar" width="320" height="290" style="display:block;margin:0 auto;max-width:100%"></canvas></div>
+      <div class="sec">🎓 Comment marche le brevet</div>
+      <div class="binfo" id="binfo"></div>
+      <div class="sec">📈 Mon analyse</div>
+      <div id="panal"></div>
+      <div class="sec">🏆 Historique récent</div>
+      <div id="phist"></div>
+      <div style="margin-top:18px;text-align:center"><button class="rbtn2" onclick="resetAll()" style="font-size:.78rem">🗑 Réinitialiser l'app</button></div>
+    </div>
+  </main>
+
+  <nav class="nav">
+    <button class="nb on" onclick="showTab('dash',this)"><span class="ni">🏠</span>Accueil</button>
+    <button class="nb" onclick="showTab('quiz',this)"><span class="ni">⚡</span>Quiz</button>
+    <button class="nb" onclick="showTab('fiches',this)"><span class="ni">🃏</span>Fiches</button>
+    <button class="nb" onclick="showTab('pomo',this)"><span class="ni">⏱</span>Focus</button>
+    <button class="nb" onclick="showTab('prof',this)"><span class="ni">👤</span>Profil</button>
+  </nav>
+</div>
+
+<!-- SUBJECT DETAIL -->
+<div id="ss">
+  <div style="max-width:700px;margin:0 auto">
+    <button class="back" onclick="closeSS()">← Retour</button>
+    <div class="shero" id="shero"><div class="shn" id="shn"></div><div class="shsc" id="shsc"></div><div style="font-size:.8rem;color:rgba(255,255,255,.5);margin-top:3px" id="shco"></div></div>
+    <div class="mascot-row"><div id="m-ss"></div><div class="bubble"><div class="who">Zo</div><div class="msg" id="m-ss-msg"></div></div></div>
+    <div class="sec">🎯 Maîtrise par thème</div>
+    <div class="mg" id="smg"></div>
+    <div class="sec">💡 Conseils ciblés</div>
+    <div id="stips"></div>
+    <button class="btn" onclick="openSQ()" style="margin-top:14px">⚡ Quiz sur cette matière</button>
+  </div>
+</div>
+
+<script>
+// ============================================================ MASCOT
+function mascotSVG(mood){
+  var eyeL='<ellipse class="m-eye" cx="40" cy="52" rx="7" ry="8" fill="#0a0e1f"/><circle cx="42.5" cy="49.5" r="2.2" fill="#fff"/>';
+  var eyeR='<ellipse class="m-eye" cx="64" cy="52" rx="7" ry="8" fill="#0a0e1f"/><circle cx="66.5" cy="49.5" r="2.2" fill="#fff"/>';
+  var mouth='<path d="M44 66 Q52 73 60 66" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+  if(mood==='happy'){eyeL='<path d="M33 52 Q40 45 47 52" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';eyeR='<path d="M57 52 Q64 45 71 52" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';mouth='<path d="M42 64 Q52 76 62 64" stroke="#0a0e1f" stroke-width="4" fill="none" stroke-linecap="round"/>';}
+  return '<svg class="mascot '+(mood==='happy'?'happy':'')+'" viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs><radialGradient id="zg" cx="40%" cy="35%"><stop offset="0%" stop-color="#7ef0e0"/><stop offset="55%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#1aa7c9"/></radialGradient></defs>'+
+    '<path d="M52 6 L60 22 L52 14 Z" fill="#fbbf24"/><circle cx="52" cy="9" r="4" fill="#fbbf24"/>'+
+    '<path d="M52 18 C74 18 90 36 90 58 C90 80 74 96 52 96 C30 96 14 80 14 58 C14 36 30 18 52 18 Z" fill="url(#zg)"/>'+
+    '<ellipse cx="42" cy="38" rx="11" ry="7" fill="rgba(255,255,255,.45)"/>'+
+    '<circle cx="30" cy="70" r="5" fill="rgba(251,113,133,.55)"/><circle cx="74" cy="70" r="5" fill="rgba(251,113,133,.55)"/>'+
+    eyeL+eyeR+mouth+'</svg>';
+}
+function placeMascot(id,mood){var el=document.getElementById(id);if(el)el.innerHTML=mascotSVG(mood||'idle')}
+function cheer(id){var el=document.getElementById(id);if(!el)return;var s=el.querySelector('.mascot');if(s){s.classList.remove('happy');void s.offsetWidth;s.classList.add('happy')}}
+
+// ============================================================ DATA
+var SUB=[
+ {id:'fr',n:'Français',i:'📝',c:3,col:'#38bdf8',t:['Grammaire','Orthographe','Lecture analytique','Rédaction','Conjugaison','Figures de style']},
+ {id:'ma',n:'Mathématiques',i:'📐',c:3,col:'#2dd4bf',t:['Algèbre','Géométrie','Statistiques','Probabilités','Fonctions','Calcul']},
+ {id:'hg',n:'Histoire-Géo-EMC',i:'🌍',c:2,col:'#fbbf24',t:['Guerres mondiales','Guerre froide','Mondialisation','Géographie France','EMC']},
+ {id:'pc',n:'Physique-Chimie',i:'⚗️',c:1,col:'#a78bfa',t:['Mécanique','Énergie','Électricité','Chimie','Ondes']},
+ {id:'sv',n:'SVT',i:'🔬',c:1,col:'#fb7185',t:['Génétique','Évolution','Écosystèmes','Corps humain','Microbes']},
+ {id:'te',n:'Technologie',i:'⚙️',c:1,col:'#34d399',t:['Programmation','Systèmes','Objets techniques','Matériaux']},
+ {id:'an',n:'Anglais',i:'🇬🇧',c:2,col:'#f0abfc',t:['Compréhension','Expression','Grammaire','Vocabulaire']},
+ {id:'es',n:'Espagnol',i:'🇪🇸',c:1.5,col:'#fda4af',t:['Compréhension','Expression','Vocabulaire','Conjugaison']},
+ {id:'ep',n:'EPS',i:'⚽',c:1,col:'#4ade80',t:['Endurance','Sports co','Technique']},
+];
+
+// Questions taguées par niveau (5=5ᵉ, 4=4ᵉ, 3=3ᵉ) et difficulté (e/m/h)
+var QB={
+fr:[
+ {q:"Le COD répond à la question :",ch:["à qui ? à quoi ?","où ? quand ?","qui ? quoi ? (après le verbe)","comment ?"],a:2,e:"Le COD répond à 'quoi/qui ?' juste après le verbe, sans préposition.",d:'e',lv:5},
+ {q:"Nature de « rapidement » dans « Il court rapidement » :",ch:["adjectif","adverbe de manière","nom","pronom"],a:1,e:"Adverbe en -ment, il modifie le verbe.",d:'e',lv:5},
+ {q:"« Il pleure comme il pleut sur la ville » — figure de style ?",ch:["Métaphore","Comparaison","Personnification","Hyperbole"],a:1,e:"« Comme » = outil de comparaison explicite.",d:'e',lv:4},
+ {q:"Une proposition subordonnée relative est introduite par :",ch:["une conjonction","un pronom relatif (qui, que, dont, où)","un adverbe","une préposition"],a:1,e:"Le pronom relatif relie la relative à un antécédent.",d:'m',lv:4},
+ {q:"Accord du participe passé avec « avoir » : il s'accorde...",ch:["toujours avec le sujet","jamais","avec le COD placé avant le verbe","avec le verbe"],a:2,e:"Ex : les pommes que j'ai mangées (COD « que » placé avant).",d:'m',lv:3},
+ {q:"« Je marchais quand il arriva » : l'imparfait exprime ici...",ch:["une action brève","une action de premier plan","le décor / l'arrière-plan","le futur"],a:2,e:"Imparfait = arrière-plan/durée ; passé simple = action brève.",d:'m',lv:4},
+ {q:"Dans « un silence assourdissant », quelle figure ?",ch:["Oxymore","Litote","Métonymie","Anaphore"],a:0,e:"Oxymore = deux mots de sens opposés réunis.",d:'h',lv:3},
+ {q:"Une analepse est :",ch:["un saut dans le futur","un retour en arrière (flashback)","une accélération","une description"],a:1,e:"Analepse = retour sur un événement antérieur.",d:'h',lv:3},
+ {q:"« Quelle horreur ! » est une phrase :",ch:["déclarative","exclamative","interrogative","impérative"],a:1,e:"Le point d'exclamation marque l'émotion.",d:'e',lv:5},
+],
+ma:[
+ {q:"15 % de 240 =",ch:["24","36","48","30"],a:1,e:"240 × 0,15 = 36.",d:'e',lv:4},
+ {q:"Résous : 3x + 7 = 22",ch:["x=4","x=5","x=3","x=6"],a:1,e:"3x = 15 → x = 5.",d:'e',lv:4},
+ {q:"Médiane de 3, 7, 2, 9, 5 :",ch:["5","7","6","3"],a:0,e:"Triée : 2,3,5,7,9 → centrale = 5.",d:'e',lv:5},
+ {q:"Théorème de Pythagore (triangle rectangle) :",ch:["a+b=c","a²+b²=c²","2a+2b=c","ab=c"],a:1,e:"c = hypoténuse, a²+b²=c².",d:'e',lv:4},
+ {q:"Développe (x+3)²",ch:["x²+9","x²+6x+9","x²+3x+9","x²+6x+3"],a:1,e:"(a+b)² = a²+2ab+b² → x²+6x+9.",d:'m',lv:3},
+ {q:"Factorise x²−9",ch:["(x−3)²","(x+3)(x−3)","(x+9)(x−1)","(x−3)(x+1)"],a:1,e:"a²−b² = (a+b)(a−b).",d:'m',lv:3},
+ {q:"Pente de y = 2x − 5 :",ch:["−5","2","5","−2"],a:1,e:"Dans y = ax+b, a = 2 est la pente.",d:'m',lv:3},
+ {q:"Triangle de côtés 6-8-10 : rectangle ?",ch:["non","oui (6²+8²=10²)","impossible à dire","seulement si isocèle"],a:1,e:"6²+8²=100=10² → rectangle (réciproque de Pythagore).",d:'m',lv:4},
+ {q:"Une augmentation de 20 % revient à multiplier par :",ch:["0,2","1,2","2","0,8"],a:1,e:"+20 % → ×1,20.",d:'m',lv:4},
+ {q:"Volume d'une sphère de rayon r :",ch:["4πr²","(4/3)πr³","πr²h","2πr"],a:1,e:"V = (4/3)πr³ (4πr² c'est l'aire).",d:'h',lv:3},
+ {q:"Résous x²−5x+6 = 0",ch:["x=2 ou 3","x=−2 ou −3","x=1 ou 6","x=0 ou 5"],a:0,e:"Somme=5, produit=6 → 2 et 3.",d:'h',lv:3},
+],
+hg:[
+ {q:"La 2nde Guerre mondiale se termine en :",ch:["1918","1945","1939","1965"],a:1,e:"1945 (capitulation de l'Allemagne puis du Japon).",d:'e',lv:3},
+ {q:"L'ONU est créée en :",ch:["1919","1945","1957","1989"],a:1,e:"1945, pour maintenir la paix après la guerre.",d:'e',lv:3},
+ {q:"Le génocide des Juifs durant la 2nde GM s'appelle :",ch:["la Shoah","la Terreur","l'Exode","la Rafle"],a:0,e:"Shoah = extermination d'environ 6 millions de Juifs.",d:'e',lv:3},
+ {q:"La guerre froide oppose :",ch:["France/Allemagne","USA/URSS","Chine/Japon","UK/USA"],a:1,e:"USA (capitalisme) vs URSS (communisme), 1947-1991.",d:'m',lv:3},
+ {q:"Le mur de Berlin tombe en :",ch:["1985","1989","1991","1993"],a:1,e:"9 novembre 1989.",d:'m',lv:3},
+ {q:"La Ve République est fondée en :",ch:["1944","1958","1968","1981"],a:1,e:"1958, par De Gaulle.",d:'m',lv:3},
+ {q:"La laïcité en France date de la loi de :",ch:["1789","1905","1958","1981"],a:1,e:"Loi de 1905 : séparation des Églises et de l'État.",d:'m',lv:3},
+ {q:"La Révolution française commence en :",ch:["1789","1804","1815","1848"],a:0,e:"1789 (prise de la Bastille le 14 juillet).",d:'e',lv:4},
+ {q:"La crise de Cuba (1962) illustre :",ch:["la décolonisation","le risque de guerre nucléaire","la mondialisation","la chute de l'URSS"],a:1,e:"Affrontement USA/URSS au bord du nucléaire.",d:'h',lv:3},
+],
+pc:[
+ {q:"Formule de l'eau :",ch:["CO₂","H₂O","O₂","NaCl"],a:1,e:"2 hydrogènes + 1 oxygène.",d:'e',lv:5},
+ {q:"Unité de la force :",ch:["Joule","Watt","Newton","Volt"],a:2,e:"Le Newton (N).",d:'e',lv:4},
+ {q:"Loi d'Ohm :",ch:["U=R/I","U=R×I","U=I/R","U=R+I"],a:1,e:"U = R × I.",d:'m',lv:4},
+ {q:"Vitesse de la lumière ≈",ch:["300 km/s","3 000 km/s","300 000 km/s","30 000 km/s"],a:2,e:"≈ 300 000 km/s.",d:'e',lv:4},
+ {q:"Dans un circuit en série, l'intensité est :",ch:["nulle","la même partout","différente partout","négative"],a:1,e:"Même intensité partout dans un circuit série.",d:'m',lv:5},
+ {q:"Énergie cinétique :",ch:["mv","½mv²","mv²","mgh"],a:1,e:"Ec = ½mv² (mgh = énergie potentielle).",d:'h',lv:3},
+ {q:"Combustion complète du carbone :",ch:["C+O₂→CO₂","C+O→CO","C+H₂O→…","2C+O₂→2CO"],a:0,e:"C + O₂ → CO₂.",d:'m',lv:4},
+],
+sv:[
+ {q:"Les décomposeurs (champignons, bactéries) :",ch:["produisent l'O₂","recyclent la matière morte","chassent","font la photosynthèse"],a:1,e:"Ils minéralisent la matière organique morte.",d:'e',lv:5},
+ {q:"La théorie de l'évolution est due à :",ch:["Newton","Darwin","Pasteur","Mendel"],a:1,e:"Charles Darwin — sélection naturelle.",d:'e',lv:4},
+ {q:"L'ADN porte :",ch:["l'énergie","l'information génétique","l'oxygène","les enzymes digestives"],a:1,e:"ADN = molécule de l'information génétique, dans le noyau.",d:'m',lv:3},
+ {q:"La photosynthèse produit :",ch:["CO₂ + eau","glucose + O₂","azote","sel"],a:1,e:"CO₂ + eau + lumière → glucose + O₂.",d:'m',lv:4},
+ {q:"Un gène existe sous plusieurs formes appelées :",ch:["chromosomes","allèles","cellules","gamètes"],a:1,e:"Les allèles = versions d'un même gène.",d:'h',lv:3},
+ {q:"La reproduction sexuée fait intervenir :",ch:["la mitose seule","méiose + fécondation","la fission","la photosynthèse"],a:1,e:"Méiose (gamètes) + fécondation.",d:'h',lv:3},
+],
+te:[
+ {q:"Une boucle « pour » (for) sert à :",ch:["tester une condition","répéter un nombre défini de fois","stocker une valeur","afficher du texte"],a:1,e:"Répétition avec compteur.",d:'e',lv:5},
+ {q:"Un « si… sinon » (if/else) est :",ch:["une boucle","une instruction conditionnelle","une variable","une fonction"],a:1,e:"Exécute selon qu'une condition est vraie ou fausse.",d:'e',lv:4},
+ {q:"Un cahier des charges décrit :",ch:["le prix uniquement","les besoins et contraintes d'un projet","le planning seul","les bénéfices"],a:1,e:"Document de référence : besoins + contraintes.",d:'m',lv:3},
+],
+an:[
+ {q:"Prétérit de « go » :",ch:["goed","went","gone","going"],a:1,e:"Verbe irrégulier : go - went - gone.",d:'e',lv:5},
+ {q:"« I have lived here for 5 years » se traduit :",ch:["J'ai vécu ici 5 ans (fini)","Je vis ici depuis 5 ans","Je vivais ici","Je vivrai ici"],a:1,e:"Present perfect + for/since = depuis (ça continue).",d:'m',lv:3},
+ {q:"« Despite the rain » signifie :",ch:["à cause de la pluie","malgré la pluie","pendant la pluie","sans la pluie"],a:1,e:"Despite = malgré.",d:'m',lv:3},
+ {q:"Passif de « They build houses » :",ch:["Houses are built","Houses build","Houses were build","Houses building"],a:0,e:"be + participe passé : are built.",d:'h',lv:3},
+],
+es:[
+ {q:"« ¿___ es tu nombre? »",ch:["Qué","Cuál","Cómo","Dónde"],a:1,e:"¿Cuál es tu nombre ? (identification).",d:'e',lv:5},
+ {q:"« Yo » + hablar au présent =",ch:["hablo","hablas","habla","hablamos"],a:0,e:"Yo hablo.",d:'e',lv:5},
+],
+ep:[
+ {q:"FCmax théorique :",ch:["220 + âge","220 − âge","180","100 + âge"],a:1,e:"220 − âge : fréquence cardiaque max théorique.",d:'e',lv:4},
+],
+};
+
+var FC={
+fr:[{q:"Qu'est-ce qu'une métaphore ?",a:"Une comparaison SANS outil de comparaison. Ex : « cet homme est un lion »."},
+ {q:"Différence imparfait / passé simple ?",a:"Imparfait = durée, décor, habitude. Passé simple = action brève de premier plan."},
+ {q:"Les 3 valeurs du présent ?",a:"Présent d'énonciation, de vérité générale, de narration."},
+ {q:"COD vs COI ?",a:"COD : sans préposition (voir quoi ?). COI : avec préposition (parler à qui ?)."},
+ {q:"Qu'est-ce qu'un champ lexical ?",a:"Ensemble de mots liés à un même thème (mer, vague, marée, océan…)."}],
+ma:[{q:"(a+b)² = ?",a:"a² + 2ab + b²"},{q:"(a−b)² = ?",a:"a² − 2ab + b²"},{q:"(a+b)(a−b) = ?",a:"a² − b²"},
+ {q:"Aire et périmètre du cercle ?",a:"Aire = πr² · Périmètre = 2πr"},
+ {q:"Théorème de Thalès (config) ?",a:"Si (DE)∥(BC) : AD/AB = AE/AC = DE/BC"},
+ {q:"Volume du cylindre ?",a:"V = π × r² × h (aire de base × hauteur)"}],
+hg:[{q:"Dates de la guerre froide ?",a:"1947 → 1991. Deux blocs : USA vs URSS."},
+ {q:"Que dit la loi de 1905 ?",a:"Séparation des Églises et de l'État → laïcité."},
+ {q:"Les institutions de la Ve République ?",a:"Président, Premier ministre, Parlement (Assemblée + Sénat)."},
+ {q:"Qu'est-ce que la décolonisation ?",a:"Accès à l'indépendance des anciennes colonies (1945-1975)."}],
+pc:[{q:"Les 3 états de la matière ?",a:"Solide, liquide, gaz (+ transitions : fusion, vaporisation…)."},
+ {q:"Différence atome / molécule ?",a:"Atome = unité de base. Molécule = plusieurs atomes liés."},
+ {q:"g sur Terre ≈ ?",a:"≈ 9,8 N/kg (souvent arrondi à 10)."}],
+sv:[{q:"Étapes simples de la mitose ?",a:"Une cellule donne 2 cellules identiques (même ADN)."},
+ {q:"Qu'est-ce qu'un allèle ?",a:"Une version d'un gène. On en a 2 par gène (un de chaque parent)."},
+ {q:"Définition d'un écosystème ?",a:"Milieu de vie (biotope) + êtres vivants (biocénose) + interactions."}],
+an:[{q:"Quand utiliser le present perfect ?",a:"Action passée liée au présent / for-since / expérience de vie."},
+ {q:"Prétérit régulier : règle ?",a:"Verbe + -ed (worked, played). Irréguliers à apprendre par cœur."}],
+};
+
+// ============================================================ STATE
+var G={};
+function newState(name,goal,style,cls){
+ var sc={},ms={};
+ SUB.forEach(function(s){sc[s.id]=10;ms[s.id]={};s.t.forEach(function(t){ms[s.id][t]=25+Math.floor(Math.random()*30)})});
+ return {name:name,goal:goal,style:style,cls:cls,lv:1,xp:0,xpn:100,streak:1,lastD:new Date().toDateString(),
+  sessions:1,tq:0,tc:0,sc:sc,ms:ms,hist:[],pomoSess:0,pomoLog:[],
+  cog:{times:[],hardOk:0,hardTot:0,easyOk:0,easyTot:0,fast:0,slow:0},routine:null};
+}
+function sv(){localStorage.setItem('bm4',JSON.stringify(G))}
+function ld(){var d=localStorage.getItem('bm4');if(d){G=JSON.parse(d);return true}return false}
+
+// ============================================================ ONBOARDING
+var ostep=1,selStyle=null,initSc={},diagIdx=0,diagScore=0,diagStart=0,diagQs=[],diagTimes=[],diagSub={},diagWOk=0,diagWTot=0;
+var DW={e:1,m:1.6,h:2.4};
+var DIAG=[
+ {s:'ma',lv:4,d:'e',q:"Résous l'équation : 5x − 3 = 2x + 9",ch:["x = 2","x = 4","x = 3","x = 6"],a:1},
+ {s:'ma',lv:3,d:'h',q:"Développe et réduis : (2x − 1)(x + 3)",ch:["2x² + 5x − 3","2x² + 6x − 3","2x² + 5x + 3","2x² − 5x − 3"],a:0},
+ {s:'fr',lv:3,d:'m',q:"Dans « Je veux que tu viennes », « viennes » est au :",ch:["indicatif présent","subjonctif présent","conditionnel présent","impératif"],a:1},
+ {s:'fr',lv:4,d:'m',q:"« Les efforts qu'il a fournis » : pourquoi « fournis » prend un -s ?",ch:["accord avec le sujet","accord avec le COD « qu' » placé avant","il est invariable","accord de proximité"],a:1},
+ {s:'hg',lv:3,d:'m',q:"Quel régime Hitler instaure-t-il en Allemagne à partir de 1933 ?",ch:["une démocratie parlementaire","une dictature totalitaire (nazisme)","une monarchie","une république fédérale"],a:1},
+ {s:'pc',lv:3,d:'h',q:"Un objet de 2 kg sur Terre (g = 10 N/kg) : quel est son poids ?",ch:["2 N","12 N","20 N","0,2 N"],a:2},
+ {s:'sv',lv:3,d:'m',q:"Où se trouve l'information génétique dans une cellule ?",ch:["dans le cytoplasme","dans la membrane","dans le noyau (l'ADN)","uniquement dans les mitochondries"],a:2},
+];
+
+function os(n){
+ if(n===2){if(!document.getElementById('iname').value.trim()){toast('✏️','Entre ton prénom !');return}}
+ if(n===3){if(!selStyle){toast('👆','Choisis ton style !');return}startDiag()}
+ if(n===4){renderRI()}
+ document.getElementById('os'+ostep).classList.remove('active');
+ ostep=n;document.getElementById('os'+n).classList.add('active');
+ var d=document.querySelectorAll('.dot');for(var i=0;i<d.length;i++)d[i].classList.toggle('on',i<n);
+ if(n===2)startLS();
+}
+function sel(el,s){selStyle=s}
+// --- Test de style d'apprentissage (VAK) ---
+var styleScores={visual:0,audio:0,reading:0,kine:0},lsIdx=0,selStyleScores=null;
+var LSTEST=[
+ {q:"Pour comprendre une nouvelle leçon, le plus efficace pour toi :",o:[["Un schéma, une carte mentale ou une vidéo","visual"],["Qu'on te l'explique à l'oral","audio"],["Lire le cours puis le résumer par écrit","reading"],["Faire des exercices directement","kine"]]},
+ {q:"Tu retiens mieux un mot de vocabulaire en :",o:[["Le voyant écrit en couleur","visual"],["Le répétant à voix haute","audio"],["L'écrivant plusieurs fois","reading"],["L'utilisant tout de suite dans une phrase","kine"]]},
+ {q:"En cours, tu es le plus attentif quand le prof :",o:[["Fait des schémas au tableau","visual"],["Raconte et explique à l'oral","audio"],["Donne un texte à lire","reading"],["Fait manipuler ou faire un exercice","kine"]]},
+ {q:"Le soir pour réviser, tu choisis plutôt :",o:[["Relire tes fiches colorées / schémas","visual"],["Te réciter la leçon à voix haute","audio"],["Relire et réécrire ton cours","reading"],["Refaire des exercices types","kine"]]},
+ {q:"Tu te souviens d'un endroit visité surtout grâce :",o:[["Aux images, à ce que tu as vu","visual"],["À ce qu'on t'a raconté dessus","audio"],["À ce que tu as lu dessus","reading"],["À ce que tu y as fait","kine"]]},
+];
+function startLS(){lsIdx=0;styleScores={visual:0,audio:0,reading:0,kine:0};renderLS()}
+function renderLS(){
+ if(lsIdx>=LSTEST.length){finishLS();return}
+ var q=LSTEST[lsIdx];document.getElementById('lsp').style.width=(lsIdx/LSTEST.length*100)+'%';
+ document.getElementById('lsarea').innerHTML='<div class="diag-q">'+q.q+'</div><div class="diag-ch">'+q.o.map(function(o,i){return '<button class="diag-b" onclick="lsAns('+i+')">'+o[0]+'</button>'}).join('')+'</div>';
+}
+function lsAns(i){var q=LSTEST[lsIdx];styleScores[q.o[i][1]]++;lsIdx++;if(lsIdx>=LSTEST.length){document.getElementById('lsp').style.width='100%';finishLS()}else renderLS()}
+function finishLS(){
+ var best='visual',bv=-1,k;for(k in styleScores){if(styleScores[k]>bv){bv=styleScores[k];best=k}}
+ selStyle=best;var tot=0;for(k in styleScores)tot+=styleScores[k];if(!tot)tot=1;
+ selStyleScores={};for(k in styleScores)selStyleScores[k]=Math.round(styleScores[k]/tot*100);
+ setTimeout(function(){os(3)},220);
+}
+function startDiag(){diagIdx=0;diagScore=0;diagTimes=[];diagSub={};diagWOk=0;diagWTot=0;diagQs=DIAG.slice();renderDiag()}
+function renderDiag(){
+ if(diagIdx>=diagQs.length)return;
+ var q=diagQs[diagIdx];diagStart=Date.now();
+ document.getElementById('dgp').style.width=(diagIdx/diagQs.length*100)+'%';
+ document.getElementById('dgarea').innerHTML='<div class="diag-q">'+q.q+' <span class="lvtag">'+q.lv+'ᵉ</span></div><div class="diag-ch">'+q.ch.map(function(c,i){return '<button class="diag-b" onclick="diagAns('+i+')">'+c+'</button>'}).join('')+'</div>';
+}
+function diagAns(i){
+ var q=diagQs[diagIdx];var dt=(Date.now()-diagStart)/1000;diagTimes.push(dt);
+ var w=DW[q.d||'m'];diagWTot+=w;
+ if(diagSub[q.s]===undefined)diagSub[q.s]={ok:0,tot:0};diagSub[q.s].tot++;
+ if(i===q.a){diagScore++;diagWOk+=w;diagSub[q.s].ok++}
+ diagIdx++;
+ if(diagIdx>=diagQs.length){document.getElementById('dgp').style.width='100%';setTimeout(function(){os(4)},250)}else renderDiag();
+}
+function renderRI(){
+ var ratio=diagWTot>0?diagWOk/diagWTot:0.5;
+ var base=6+ratio*9;
+ SUB.forEach(function(s){var est=base;if(diagSub[s.id])est=5+((diagSub[s.id].ok/diagSub[s.id].tot)*0.6+ratio*0.4)*10;initSc[s.id]=Math.round(Math.max(3,Math.min(18,est))*2)/2});
+ document.getElementById('rinit').innerHTML=SUB.map(function(s){
+  return '<div class="range-row"><em>'+s.i+'</em><div class="range-info"><div class="range-n">'+s.n+'</div><div class="range-c">coeff '+s.c+'</div></div><input type="range" min="0" max="20" value="'+initSc[s.id]+'" step=".5" oninput="initSc[\''+s.id+'\']=parseFloat(this.value);this.nextElementSibling.textContent=parseFloat(this.value).toFixed(1)"><span class="range-v" style="color:'+s.col+'">'+initSc[s.id].toFixed(1)+'</span></div>';
+ }).join('');
+}
+function finishOB(){
+ var nm=document.getElementById('iname').value.trim()||'Élève';
+ G=newState(nm,document.getElementById('igoal').value,selStyle||'visual',document.getElementById('iclass').value);
+ SUB.forEach(function(s){if(initSc[s.id]!==undefined)G.sc[s.id]=initSc[s.id]});
+ G.cog.times=diagTimes.slice();diagTimes.forEach(function(t){if(t<5)G.cog.fast++;else G.cog.slow++});
+ if(selStyleScores)G.styleScores=selStyleScores;
+ sv();launch();confetti();setTimeout(function(){toast('🚀','Bienvenue '+nm+' ! On va décrocher ce brevet !')},300);
+}
+
+// ============================================================ LAUNCH
+function launch(){
+ document.getElementById('so').classList.remove('active');
+ document.getElementById('sa').classList.add('active');
+ checkStreak();ensureRoutine();renderAll();
+ placeMascot('m-dash','happy');placeMascot('m-quiz','idle');placeMascot('m-ss','idle');
+}
+function checkStreak(){
+ var t=new Date().toDateString();
+ if(G.lastD!==t){var y=new Date(Date.now()-86400000).toDateString();G.streak=(G.lastD===y)?G.streak+1:1;G.lastD=t;G.sessions++;sv()}
+}
+function renderAll(){
+ document.getElementById('hav').textContent=G.name[0].toUpperCase();
+ document.getElementById('hn').textContent=G.name;
+ document.getElementById('hl').textContent='Niveau '+G.lv;
+ document.getElementById('stkn').textContent=G.streak;
+ document.getElementById('xptiny').style.width=Math.min(100,G.xp/G.xpn*100)+'%';
+ renderJ();renderDash();renderQTabs();renderFCTabs();renderPomo();
+}
+
+// ============================================================ COUNTDOWN
+function brevetDate(){var now=new Date();var y=now.getFullYear();var d=new Date(y,5,29);if(now>d)d=new Date(y+1,5,29);return d}
+function renderJ(){var days=Math.max(0,Math.ceil((brevetDate()-new Date())/86400000));document.getElementById('jdays').textContent=days}
+
+// ============================================================ ROUTINE
+function ensureRoutine(){
+ var today=new Date().toDateString();
+ if(!G.routine||G.routine.date!==today){
+  var srt=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]});
+  var w1=srt[0],w2=srt[1];var fcSubId=FC[w2.id]?w2.id:'fr';var fcName=SUB.find(function(s){return s.id===fcSubId}).n;
+  G.routine={date:today,goalMin:20,doneMin:0,tasks:[
+    {id:'t1',ic:w1.i,l:'Quiz de '+w1.n,m:'8 min • ta matière la plus fragile',min:8,done:false,act:'quiz',sub:w1.id},
+    {id:'t2',ic:SUB.find(function(s){return s.id===fcSubId}).i,l:'Fiches de '+fcName,m:'6 min • mémorisation',min:6,done:false,act:'fiches',sub:fcSubId},
+    {id:'t3',ic:'⏱',l:'Session Focus',m:'6 min • concentration',min:6,done:false,act:'pomo',sub:''},
+  ]};
+  sv();
+ }
+}
+function renderRoutine(){
+ var r=G.routine;var focus=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]})[0];
+ document.getElementById('rt-focus').textContent='🎯 Focus : '+focus.n;
+ document.getElementById('rt-goal').textContent='Objectif : '+r.goalMin+' minutes par jour, chaque jour.';
+ document.getElementById('rt-goalmin').textContent=r.goalMin;
+ document.getElementById('rt-min').textContent=r.doneMin;
+ var pct=Math.min(100,Math.round(r.doneMin/r.goalMin*100));
+ document.getElementById('rt-pct').textContent=pct+'%';
+ document.getElementById('rt-ringfg').style.strokeDashoffset=169.6*(1-pct/100);
+ document.getElementById('rt-tasks').innerHTML=r.tasks.map(function(t){
+  return '<div class="task'+(t.done?' done':'')+'"><div class="task-check" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</div><div class="task-ic">'+t.ic+'</div><div class="task-info"><div class="task-l">'+t.l+'</div><div class="task-m">'+t.m+'</div></div>'+(t.done?'':'<button class="task-go" onclick="goTask(\''+t.act+'\',\''+(t.sub||'')+'\')">Go →</button>')+'</div>';
+ }).join('');
+}
+function toggleTask(id){
+ var t=G.routine.tasks.find(function(x){return x.id===id});if(!t)return;
+ t.done=!t.done;G.routine.doneMin=G.routine.tasks.reduce(function(a,x){return a+(x.done?x.min:0)},0);
+ if(t.done){addXP(15,'Tâche faite ! 💪');cheer('m-dash')}
+ sv();renderRoutine();
+ if(G.routine.tasks.every(function(x){return x.done})){confetti();toast('🏆','Routine du jour terminée ! Bravo !')}
+}
+function goTask(act,sub){
+ if(act==='quiz'){if(sub)qSub=sub;showTab('quiz',document.querySelectorAll('.nb')[1])}
+ else if(act==='fiches'){if(sub&&FC[sub])fcSub=sub;showTab('fiches',document.querySelectorAll('.nb')[2])}
+ else if(act==='pomo'){showTab('pomo',document.querySelectorAll('.nb')[3])}
+}
+
+// ============================================================ MASCOT ADVICE
+var ADVICE=[
+ "Astuce : révise 20 min par jour plutôt que 3h le dimanche. Ton cerveau retient mieux en petites doses 🧠",
+ "Bois de l'eau et dors bien : un cerveau reposé apprend 2× plus vite 💧",
+ "Refais tes erreurs ! Une question ratée comprise vaut 10 questions réussies par hasard ✨",
+ "Explique une leçon à voix haute comme si tu l'enseignais. Si tu y arrives, c'est gagné 🎤",
+ "La veille du brevet : relis tes fiches, pas de nouveau chapitre. Et dors ! 😴",
+ "Coupe ton téléphone pendant le Focus. 25 min sans notif = un super-pouvoir 📵",
+ "Le brevet couvre la 5ᵉ, la 4ᵉ ET la 3ᵉ. Ne néglige pas les bases des années d'avant 📚",
+ "Commence par ta matière la plus dure quand tu es frais, le reste suivra 🌅",
+];
+function dashAdvice(){
+ var r=G.routine;var done=r?r.doneMin:0;var goal=r?r.goalMin:20;var msgs=[];
+ if(done===0)msgs.push("Prêt à attaquer ? Commence par ta routine du jour, juste "+goal+" minutes 💪");
+ else if(done<goal)msgs.push("Bien joué ! Encore "+(goal-done)+" min et ton objectif du jour est validé 🔥");
+ else msgs.push("Objectif du jour atteint ! T'es une machine 🏆 Tu peux continuer en bonus.");
+ if(G.streak>=3)msgs.push(G.streak+" jours d'affilée ! Cette régularité, c'est exactement ce qui décroche une mention 🔥");
+ var srt=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]});
+ msgs.push("Aujourd'hui, bosse "+srt[0].n+" — c'est là que tu gagneras le plus de points 🎯");
+ return msgs[Math.floor(Math.random()*msgs.length)];
+}
+function newAdvice(){var pool=ADVICE.concat([dashAdvice()]);document.getElementById('m-dash-msg').textContent=pool[Math.floor(Math.random()*pool.length)];cheer('m-dash')}
+
+// ============================================================ DASHBOARD
+function renderDash(){
+ document.getElementById('dn').textContent=G.name;
+ var days=Math.max(0,Math.ceil((brevetDate()-new Date())/86400000));
+ document.getElementById('dsub').textContent='Plus que '+days+' jours avant le brevet. '+(days<=14?'Phase finale, on lâche rien ! 🔥':'On construit ta réussite jour après jour 💪');
+ document.getElementById('m-dash-msg').textContent=dashAdvice();
+ renderRoutine();
+ document.getElementById('stq').textContent=G.tq;
+ document.getElementById('stc').textContent=G.tq>0?Math.round(G.tc/G.tq*100)+'%':'0%';
+ document.getElementById('sts').textContent=G.sessions;
+ document.getElementById('stx').textContent=G.lv;
+ renderMention();
+ document.getElementById('dsg').innerHTML=SUB.map(function(s){var sc=G.sc[s.id],p=sc/20*100;return '<div class="scard" style="--sc:'+s.col+'" onclick="openSS(\''+s.id+'\')"><div class="st"><span class="si">'+s.i+'</span><span class="ss">'+sc.toFixed(1)+'</span></div><div class="sn">'+s.n+'</div><div class="sk">Coeff '+s.c+'</div><div class="sb"><div class="sbf" style="width:'+p+'%;background:'+s.col+'"></div></div></div>'}).join('');
+ var srt=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]});
+ document.getElementById('drec').innerHTML=
+  '<div class="tip"><div class="tip-i">🎯</div><div class="tip-t"><b>Priorité :</b> '+srt[0].n+' et '+srt[1].n+' — tes notes les plus basses, le plus d\'impact sur ta mention.</div></div>'+
+  '<div class="tip"><div class="tip-i">⚡</div><div class="tip-t"><b>Point fort :</b> '+srt[srt.length-1].n+' ('+G.sc[srt[srt.length-1].id].toFixed(1)+'/20). Entretiens-le avec 1 quiz/semaine.</div></div>'+
+  '<div class="tip"><div class="tip-i">🧠</div><div class="tip-t"><b>Ton style ('+styleLabel(G.style)+') :</b> '+styleAdvice(G.style)+'</div></div>';
+}
+function computeScores(){
+ var ws=0,wc=0;SUB.forEach(function(s){ws+=G.sc[s.id]*s.c;wc+=s.c});var cc=ws/wc;
+ var acc=G.tq>0?G.tc/G.tq:0.5;var ep=cc*0.55+(acc*20)*0.45;ep=Math.max(0,Math.min(20,ep));
+ return {cc:cc,ep:ep,final:cc*0.4+ep*0.6};
+}
+function mentionOf(v){
+ if(v>=16)return {n:'Très Bien 🏆',c:'#34d399'};
+ if(v>=14)return {n:'Bien 🥇',c:'#2dd4bf'};
+ if(v>=12)return {n:'Assez Bien 🥈',c:'#38bdf8'};
+ if(v>=10)return {n:'Brevet obtenu 🎓',c:'#fbbf24'};
+ return {n:'Pas encore le seuil — accroche-toi !',c:'#fb7185'};
+}
+function renderMention(){
+ var r=computeScores();var m=mentionOf(r.final);
+ document.getElementById('mcs').textContent=r.final.toFixed(1)+'/20';
+ document.getElementById('mcs').style.color=m.c;
+ document.getElementById('mcn').textContent=m.n;
+ document.getElementById('mcb').style.width=Math.min(100,r.final/20*100)+'%';
+ document.getElementById('mcb').style.background='linear-gradient(90deg,'+m.c+',#a78bfa)';
+ document.getElementById('mc-cc').textContent=r.cc.toFixed(1)+'/20';
+ document.getElementById('mc-ep').textContent=r.ep.toFixed(1)+'/20';
+}
+
+// ============================================================ QUIZ
+var qSub=SUB[0].id,qDiff='auto',qQs=[],qIdx=0,qOk=0,qAns=false,qTmr=null,qTime=0,qQStart=0;
+function renderQTabs(){
+ document.getElementById('qtabs').innerHTML=SUB.filter(function(s){return QB[s.id]}).map(function(s){return '<div class="stab'+(s.id===qSub?' on':'')+'" onclick="setQSub(\''+s.id+'\',this)">'+s.i+' '+s.n+'</div>'}).join('');
+ startQuiz();
+}
+function setQSub(id,el){var t=document.querySelectorAll('#qtabs .stab');for(var i=0;i<t.length;i++)t[i].classList.remove('on');el.classList.add('on');qSub=id;startQuiz()}
+function setDiff(d,el){var b=document.querySelectorAll('.db');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on');qDiff=d;startQuiz()}
+function autoDiff(){
+ var acc=G.tq>0?G.tc/G.tq:0.5;var sc=G.sc[qSub];var lvls=['e','m','h'];var idx;
+ if(sc>=14||acc>=0.78)idx=2;else if(sc>=11||acc>=0.55)idx=1;else idx=0;
+ var shift={r:-1,ab:0,b:0,tb:1}[G.goal]||0; // vise plus haut = questions plus dures
+ idx=Math.max(0,Math.min(2,idx+shift));
+ return lvls[idx];
+}
+function startQuiz(){
+ document.getElementById('qres').classList.remove('show');
+ var pool=QB[qSub]||QB.ma;var eff=qDiff;if(qDiff==='auto')eff=autoDiff();
+ var filtered=pool;if(eff!=='mix')filtered=pool.filter(function(q){return q.d===eff});if(filtered.length<3)filtered=pool;
+ qQs=shuffle(filtered.slice()).slice(0,Math.min(filtered.length,6));qIdx=0;qOk=0;
+ if(qDiff==='auto')document.getElementById('m-quiz-msg').textContent='Je t\'ai préparé un niveau '+({e:'facile 🟢',m:'moyen 🟡',h:'difficile 🔴'}[eff])+' adapté à toi. Go !';
+ renderQ();
+}
+function renderQ(){
+ if(qIdx>=qQs.length){showQRes();return}
+ var q=qQs[qIdx];clearInterval(qTmr);
+ qTime=(q.d==='h')?22:(q.d==='m')?28:38;qAns=false;qQStart=Date.now();
+ var dc={e:'#34d399',m:'#fbbf24',h:'#fb7185'}[q.d]||'#a78bfa';var dl={e:'Facile',m:'Moyen',h:'Difficile'}[q.d]||'Mix';
+ var lvtag=q.lv?'<span class="lvtag">'+q.lv+'ᵉ</span>':'';
+ document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
+ qTmr=setInterval(function(){qTime--;var tv=document.getElementById('tv');if(tv){tv.textContent=qTime;tv.parentNode.style.color=qTime<=8?'var(--rose)':'var(--amber)'}if(qTime<=0){clearInterval(qTmr);if(!qAns)timeQ()}},1000);
+}
+function ans(c){
+ if(qAns)return;qAns=true;clearInterval(qTmr);
+ var q=qQs[qIdx];var dt=(Date.now()-qQStart)/1000;
+ var btns=document.querySelectorAll('.qb');for(var i=0;i<btns.length;i++)btns[i].classList.add('lk');
+ btns[q.a].classList.add('ok');
+ if(!G.cog)G.cog={times:[],hardOk:0,hardTot:0,easyOk:0,easyTot:0,fast:0,slow:0};
+ G.cog.times.push(dt);if(G.cog.times.length>50)G.cog.times.shift();
+ if(dt<7)G.cog.fast++;else G.cog.slow++;
+ if(q.d==='h'){G.cog.hardTot++;if(c===q.a)G.cog.hardOk++}
+ if(q.d==='e'){G.cog.easyTot++;if(c===q.a)G.cog.easyOk++}
+ if(c===q.a){btns[c].classList.add('ok');qOk++;addXP(10+Math.floor(qTime*0.5),'✅ Correct !');G.sc[qSub]=Math.min(20,G.sc[qSub]+0.1);var s=SUB.find(function(x){return x.id===qSub});var tp=s.t[Math.floor(Math.random()*s.t.length)];G.ms[qSub][tp]=Math.min(100,(G.ms[qSub][tp]||30)+5);cheer('m-quiz')}
+ else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);toast('📖','Lis bien l\'explication')}
+ document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');
+ G.tq++;if(c===q.a)G.tc++;sv();
+}
+function timeQ(){if(qAns)return;qAns=true;var q=qQs[qIdx];var btns=document.querySelectorAll('.qb');for(var i=0;i<btns.length;i++)btns[i].classList.add('lk');btns[q.a].classList.add('ok');document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');toast('⏰','Temps écoulé !');G.tq++;sv()}
+function nextQ(){qIdx++;renderQ()}
+function showQRes(){
+ clearInterval(qTmr);var p=Math.round(qOk/qQs.length*100);
+ var em=p>=80?'🏆':p>=60?'😊':p>=40?'💪':'📚';
+ var ms=p>=80?'Excellent, tu maîtrises !':p>=60?'Bon boulot, continue !':p>=40?'Pas mal, encore un effort !':'Révise et reviens, tu vas y arriver !';
+ document.getElementById('re').textContent=em;document.getElementById('rsc').textContent=qOk+'/'+qQs.length;document.getElementById('rm').textContent=ms;
+ document.getElementById('rd').innerHTML='<div class="rrow"><span style="color:var(--t2)">Score</span><b>'+p+'%</b></div><div class="rrow"><span style="color:var(--t2)">Bonnes réponses</span><b style="color:var(--ok)">'+qOk+'</b></div><div class="rrow"><span style="color:var(--t2)">À retravailler</span><b style="color:var(--ko)">'+(qQs.length-qOk)+'</b></div><div class="rrow"><span style="color:var(--t2)">XP gagné</span><b style="color:var(--p)">+'+(qOk*15)+'</b></div>';
+ document.getElementById('qarea').innerHTML='';document.getElementById('qres').classList.add('show');
+ var sb=SUB.find(function(s){return s.id===qSub});
+ G.hist.unshift({sub:qSub,icon:sb.i,name:sb.n,score:qOk+'/'+qQs.length,date:new Date().toLocaleDateString('fr-FR')});
+ if(G.hist.length>20)G.hist.pop();
+ addXP(qOk*15+(p===100?40:0),'Quiz terminé !');
+ if(p===100){confetti();toast('🏆','Score parfait ! Incroyable !')}
+ sv();renderDash();
+}
+
+// ============================================================ FLASHCARDS
+var fcSub='fr',fcCards=[],fcIdx=0,fcFlip=false,fcKnown=0;
+function renderFCTabs(){document.getElementById('fctabs').innerHTML=Object.keys(FC).map(function(id){var s=SUB.find(function(x){return x.id===id});return '<div class="stab'+(id===fcSub?' on':'')+'" onclick="setFCSub(\''+id+'\',this)">'+(s?s.i+' '+s.n:id)+'</div>'}).join('');loadFC()}
+function setFCSub(id,el){var t=document.querySelectorAll('#fctabs .stab');for(var i=0;i<t.length;i++)t[i].classList.remove('on');el.classList.add('on');fcSub=id;loadFC()}
+function loadFC(){fcCards=shuffle((FC[fcSub]||[]).slice());fcIdx=0;fcKnown=0;fcFlip=false;showFC()}
+function showFC(){if(!fcCards.length){document.getElementById('fcq').textContent='Pas de fiches ici.';document.getElementById('fca').textContent='';return}var c=fcCards[fcIdx%fcCards.length];document.getElementById('fcq').textContent=c.q;document.getElementById('fca').textContent=c.a;document.getElementById('fc').classList.remove('flip');fcFlip=false;document.getElementById('fcc').textContent='Fiche '+((fcIdx%fcCards.length)+1)+' / '+fcCards.length+'  •  '+fcKnown+' su(es)'}
+function flipCard(){document.getElementById('fc').classList.toggle('flip');fcFlip=!fcFlip}
+function fcAns(known){if(!fcFlip){flipCard();return}if(known){fcKnown++;addXP(5,'📖 +5 XP')}else{toast('🔄','On la reverra')}fcIdx++;if(fcIdx>=fcCards.length){toast('🎉','Série finie : '+fcKnown+'/'+fcCards.length+' su(es) !');confetti();fcIdx=0;fcKnown=0}setTimeout(showFC,250)}
+function fcSkip(){fcIdx=(fcIdx+1)%fcCards.length;showFC()}
+
+// ============================================================ POMODORO
+var pW=25,pB=5,pRun=false,pBrk=false,pSec=0,pTot=0,pInt=null;
+function setPM(w,b,el,lbl){pW=w;pB=b;var m=document.querySelectorAll('.pmode');for(var i=0;i<m.length;i++)m[i].classList.remove('on');el.classList.add('on');resetPomo();pTot=w*60;document.getElementById('pt').textContent=fmt(w*60);document.getElementById('plbl').textContent=lbl}
+function renderPomo(){var n=Math.min(8,(G.pomoSess||0)+4);var h='';for(var i=0;i<n;i++)h+='<div class="ps'+(i<(G.pomoSess||0)?' done':'')+'"></div>';document.getElementById('psess').innerHTML=h;renderPLog()}
+function renderPLog(){var l=G.pomoLog||[];document.getElementById('plog').innerHTML=l.length?l.slice(0,5).map(function(x){return '<div class="rrow"><span style="color:var(--t2)">'+(x.type==='w'?'⏱ Focus':'☕ Pause')+'</span><span>'+x.dur+' min — '+x.time+'</span></div>'}).join(''):'<div style="color:var(--t2);font-size:.82rem;text-align:center;padding:6px">Aucune session aujourd\'hui</div>'}
+function togglePomo(){
+ if(pRun){pRun=false;clearInterval(pInt);document.getElementById('pbtn').textContent='▶ Reprendre';return}
+ if(!pSec){pSec=pW*60;pTot=pW*60;pBrk=false}
+ pRun=true;document.getElementById('pbtn').textContent='⏸ Pause';
+ pInt=setInterval(function(){pSec--;updP();if(pSec<=0){
+   if(!pBrk){G.pomoSess=(G.pomoSess||0)+1;if(!G.pomoLog)G.pomoLog=[];G.pomoLog.unshift({type:'w',dur:pW,time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});if(G.routine){var pt=G.routine.tasks.find(function(t){return t.act==='pomo'&&!t.done});if(pt){pt.done=true;G.routine.doneMin=G.routine.tasks.reduce(function(a,x){return a+(x.done?x.min:0)},0)}}sv();renderPomo();confetti();toast('☕','Super focus ! Pause '+pB+' min');pBrk=true;pSec=pB*60;pTot=pB*60;document.getElementById('plbl').textContent='Pause 🌿';document.getElementById('pring').style.stroke='var(--green)';}
+   else{toast('💪','Au boulot !');pSec=pW*60;pTot=pW*60;pBrk=false;document.getElementById('plbl').textContent='Focus';document.getElementById('pring').style.stroke='var(--p)'}
+ }},1000);
+}
+function resetPomo(){clearInterval(pInt);pRun=false;pBrk=false;pSec=pW*60;pTot=pW*60;document.getElementById('pbtn').textContent='▶ Démarrer';document.getElementById('pt').textContent=fmt(pW*60);document.getElementById('plbl').textContent='Focus';document.getElementById('pring').style.stroke='var(--p)';document.getElementById('pring').style.strokeDashoffset=0}
+function updP(){document.getElementById('pt').textContent=fmt(pSec);document.getElementById('pring').style.strokeDashoffset=264*(1-pSec/pTot);if(pSec<=10&&!pBrk)document.getElementById('pring').style.stroke='var(--rose)'}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+
+// ============================================================ SUBJECT DETAIL
+var curSub=null;
+function openSS(id){
+ curSub=id;var s=SUB.find(function(x){return x.id===id});var sc=G.sc[id];
+ document.getElementById('shn').textContent=s.i+' '+s.n;
+ document.getElementById('shsc').textContent=sc.toFixed(1)+'/20';document.getElementById('shsc').style.color=s.col;
+ document.getElementById('shco').textContent='Coefficient '+s.c+' au brevet';
+ var h=document.getElementById('shero');h.style.background='linear-gradient(135deg,'+s.col+'22,'+s.col+'0a)';h.style.border='1px solid '+s.col+'44';
+ placeMascot('m-ss','idle');
+ document.getElementById('m-ss-msg').textContent=sc>=14?'Tu gères bien '+s.n+' ! On vise l\'excellence 🚀':sc>=10?'Bon niveau en '+s.n+'. Encore quelques quiz et tu décolles 💪':'C\'est une priorité ! Quelques minutes par jour et ça remonte vite 🎯';
+ document.getElementById('smg').innerHTML=s.t.map(function(t){var m=G.ms[id][t]||30;return '<div class="mi"><div class="min">'+t+'</div><div class="mib"><div class="mif" style="width:'+m+'%;background:'+s.col+'"></div></div><div class="mip" style="color:'+s.col+'">'+m+'%</div></div>'}).join('');
+ document.getElementById('stips').innerHTML=subTips(id,s).map(function(t){return '<div class="tip"><div class="tip-i">'+t.i+'</div><div class="tip-t">'+t.t+'</div></div>'}).join('');
+ var el=document.getElementById('ss');el.classList.add('open');el.style.display='block';window.scrollTo(0,0);
+}
+function closeSS(){var el=document.getElementById('ss');el.style.display='none';el.classList.remove('open')}
+function openSQ(){closeSS();if(QB[curSub])qSub=curSub;showTab('quiz',document.querySelectorAll('.nb')[1])}
+function subTips(id,s){
+ var m={
+  fr:[{i:'✍️',t:'<b>Conjugaison & accords :</b> 5 phrases par jour. Le PP avec avoir tombe souvent !'},{i:'📖',t:'<b>Lecture :</b> 15 min/jour booste vocabulaire et compréhension sans effort.'},{i:'🎯',t:'<b>Rédaction :</b> brouillon → plan en 3 parties → rédige → relis pour l\'orthographe.'}],
+  ma:[{i:'📐',t:'<b>Les incontournables :</b> Pythagore, Thalès, identités remarquables, %. 3 exos/jour.'},{i:'✏️',t:'<b>Rédige tes étapes :</b> au brevet le raisonnement rapporte des points même sans le résultat.'},{i:'🔢',t:'<b>Calcul mental :</b> 5 min/jour = du temps gagné le jour J.'}],
+  hg:[{i:'🗓️',t:'<b>Frise chrono :</b> place les 10 grandes dates de la 5ᵉ à la 3ᵉ. Visualiser = retenir.'},{i:'🗺️',t:'<b>Cartes & repères :</b> une carte mémorisée par semaine.'},{i:'✒️',t:'<b>Développement construit :</b> intro (contexte+problématique) → 2/3 paragraphes → conclusion.'}],
+ };
+ return m[id]||[{i:'💡',t:'<b>Méthode :</b> repère les 5 notions clés de '+s.n+' et assure-les une par une.'},{i:'🔄',t:'<b>Répétition espacée :</b> revois à J+1, J+3, J+7, J+14.'},{i:'⏱',t:'<b>Focus :</b> une session Pomodoro ciblée vaut mieux que 2h dispersées.'}];
+}
+
+// ============================================================ PROFIL
+function renderProf(){
+ document.getElementById('pav').textContent=G.name[0].toUpperCase();
+ document.getElementById('pn').textContent=G.name;
+ var titles=['Apprenti','Étudiant','Réviseur','Stratège','Expert','Maître','Légende'];
+ document.getElementById('psub').textContent='Niveau '+G.lv+' • '+titles[Math.min(G.lv-1,titles.length-1)];
+ document.getElementById('pbadges').innerHTML=badges().map(function(b){return '<div class="badge" style="color:'+b.c+';border-color:'+b.c+';background:'+b.c+'18">'+b.i+' '+b.n+'</div>'}).join('');
+ renderCog();
+ var styles=[{n:'Visuel',k:'visual',c:'#38bdf8',i:'👁️'},{n:'Auditif',k:'audio',c:'#fb7185',i:'🎧'},{n:'Lecture',k:'reading',c:'#34d399',i:'📖'},{n:'Pratique',k:'kine',c:'#fbbf24',i:'✍️'}];
+ document.getElementById('pstyle').innerHTML=styles.map(function(st){var v=(G.styleScores&&G.styleScores[st.k]!=null)?G.styleScores[st.k]:(st.k===G.style?85:15);var dom=st.k===G.style?' • dominant':'';return '<div class="stylec"><div class="styleti">'+st.i+' '+st.n+dom+'</div><div class="stylev" style="color:'+st.c+'">'+v+'%</div><div class="styleb"><div class="stylebf" style="width:'+v+'%;background:'+st.c+'"></div></div></div>'}).join('');
+ drawRadar();renderBrevetInfo();
+ var srt=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]});var r=computeScores();var tgt={r:10,ab:12,b:14,tb:16}[G.goal]||14;
+ document.getElementById('panal').innerHTML=
+  '<div class="tip"><div class="tip-i">📉</div><div class="tip-t"><b>Point faible :</b> '+srt[0].n+' ('+G.sc[srt[0].id].toFixed(1)+'/20). 30 min/jour ici = mention assurée.</div></div>'+
+  '<div class="tip"><div class="tip-i">📈</div><div class="tip-t"><b>Point fort :</b> '+srt[srt.length-1].n+' ('+G.sc[srt[srt.length-1].id].toFixed(1)+'/20). Garde le rythme.</div></div>'+
+  '<div class="tip"><div class="tip-i">🎯</div><div class="tip-t"><b>Objectif '+goalLabel(G.goal)+' :</b> '+(r.final>=tgt?'🎉 Tu es sur la bonne voie, maintiens !':'Il te manque '+(tgt-r.final).toFixed(1)+' pts. Focus : '+srt[0].n+' et '+srt[1].n+'.')+'</div></div>'+
+  '<div class="tip"><div class="tip-i">⏰</div><div class="tip-t"><b>Plan conseillé :</b> '+(G.style==='kine'?'45 min d\'exercices':G.style==='visual'?'30 min de fiches colorées + schémas':'40 min de révision')+' par soir, 5 soirs/semaine, en alternant les matières.</div></div>';
+ document.getElementById('phist').innerHTML=G.hist.length?G.hist.slice(0,6).map(function(h){var s=SUB.find(function(x){return x.id===h.sub});return '<div class="hist"><div class="histic" style="background:'+(s?s.col:'#888')+'22">'+h.icon+'</div><div class="histin"><div class="histt">'+h.name+'</div><div class="hists">'+h.date+'</div></div><div class="histsc" style="color:'+(s?s.col:'#fff')+'">'+h.score+'</div></div>'}).join(''):'<div style="color:var(--t2);text-align:center;padding:18px;font-size:.86rem">Fais ton premier quiz pour démarrer ton historique !</div>';
+}
+function renderCog(){
+ var c=G.cog||{times:[],hardOk:0,hardTot:0,easyOk:0,easyTot:0,fast:0,slow:0};
+ var avgT=c.times.length?c.times.reduce(function(a,b){return a+b},0)/c.times.length:7;var n=c.times.length;
+ var speed=Math.max(5,Math.min(95,Math.round((12-avgT)/9*100)));
+ var lAvg=avg(['ma','pc','te'].map(function(id){return G.sc[id]}));var mAvg=avg(['fr','hg','an','es'].map(function(id){return G.sc[id]}));
+ var logic=Math.max(5,Math.min(95,Math.round(50+(lAvg-mAvg)*8)));
+ var acc=G.tq>0?G.tc/G.tq:0.5;var risk=Math.max(5,Math.min(95,Math.round(speed*0.6+(1-acc)*40)));
+ setAxis('speed',speed);setAxis('logic',logic);setAxis('risk',risk);
+ var em='🧩',ti='Profil en construction',de='Fais quelques quiz pour que j\'affine ton portrait cognitif.';
+ if(n>=4){
+  if(speed>=60&&acc>=0.7){em='⚡';ti='Vif et précis';de='Tu réponds vite ET juste, un vrai atout. Garde cette assurance le jour J.'}
+  else if(speed>=60&&acc<0.6){em='🚀';ti='Intuitif mais pressé';de='Tu vas vite mais tu te fais piéger. Prends 5 sec pour relire avant de valider : des points faciles à gagner.'}
+  else if(speed<45&&acc>=0.7){em='🎯';ti='Méthodique et rigoureux';de='Tu prends ton temps et tu vises juste. Entraîne ta vitesse pour ne pas manquer de temps à l\'examen.'}
+  else if(speed<45&&acc<0.6){em='🌱';ti='En pleine progression';de='Tu construis tes bases. La régularité (20 min/jour) va tout changer, fais-moi confiance.'}
+  else{em='⚖️';ti='Équilibré';de='Bon mélange de vitesse et de réflexion. Continue à pousser les quiz difficiles.'}
+  if(logic>=62)de+=' Ton point fort : le raisonnement logique 🔢.';else if(logic<=38)de+=' Ton point fort : la mémoire et les langues 📚.';
+ }
+ document.getElementById('cog-em').textContent=em;document.getElementById('cog-t').textContent=ti;document.getElementById('cog-d').textContent=de;
+}
+function setAxis(name,v){document.getElementById('ax-'+name).style.width=v+'%';document.getElementById('mk-'+name).style.left=v+'%'}
+function avg(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+function renderBrevetInfo(){
+ var ep=[{i:'📝',n:'Français',p:'100 pts'},{i:'📐',n:'Mathématiques',p:'100 pts'},{i:'🌍',n:'Histoire-Géo-EMC',p:'50 pts'},{i:'🔬',n:'Sciences (2 sur 3)',p:'50 pts'},{i:'🎤',n:'Oral (soutenance)',p:'100 pts'}];
+ document.getElementById('binfo').innerHTML=
+  '<div style="font-size:.85rem;font-weight:700;margin-bottom:6px">📊 Comment se calcule ta note</div>'+
+  '<div class="brow"><div class="bl"><em>📚</em> Contrôle continu (toute l\'année)</div><div class="bpts">40%</div></div>'+
+  '<div class="brow"><div class="bl"><em>✍️</em> Épreuves finales (en juin)</div><div class="bpts">60%</div></div>'+
+  '<div style="font-size:.85rem;font-weight:700;margin:12px 0 4px">✍️ Les épreuves finales</div>'+
+  ep.map(function(e){return '<div class="brow"><div class="bl"><em>'+e.i+'</em> '+e.n+'</div><div class="bpts">'+e.p+'</div></div>'}).join('')+
+  '<div class="bnote">📚 <b>Le programme couvre tout le cycle 4 : 5ᵉ, 4ᵉ et 3ᵉ.</b><br>🎓 <b>Mentions :</b> Assez Bien dès 12/20 • Bien dès 14/20 • Très Bien dès 16/20. Le brevet est obtenu à partir de 10/20.<br>Le contrôle continu pèse 40 % : <b>chaque note de l\'année compte !</b></div>'+
+  '<div style="font-size:.78rem;color:var(--t2);margin-top:12px;font-weight:600">Ajuster ma moyenne de contrôle continu</div>'+
+  '<div class="cc-input"><span style="font-size:1.1rem">📚</span><input type="range" min="0" max="20" step="0.5" value="'+overallCC().toFixed(1)+'" oninput="adjCC(this.value)"><b id="cc-disp">'+overallCC().toFixed(1)+'/20</b></div>';
+}
+function overallCC(){var ws=0,wc=0;SUB.forEach(function(s){ws+=G.sc[s.id]*s.c;wc+=s.c});return ws/wc}
+function adjCC(v){v=parseFloat(v);var diff=v-overallCC();SUB.forEach(function(s){G.sc[s.id]=Math.max(0,Math.min(20,G.sc[s.id]+diff))});document.getElementById('cc-disp').textContent=v.toFixed(1)+'/20';sv();renderMention()}
+function badges(){
+ var b=[];
+ if(G.streak>=3)b.push({n:'Série 3j',i:'🔥',c:'#fbbf24'});
+ if(G.streak>=7)b.push({n:'Semaine pro',i:'📅',c:'#34d399'});
+ if(G.tq>=10)b.push({n:'10 questions',i:'⚡',c:'#2dd4bf'});
+ if(G.tq>=50)b.push({n:'50 questions',i:'💎',c:'#38bdf8'});
+ if(G.lv>=3)b.push({n:'Niveau '+G.lv,i:'⭐',c:'#a78bfa'});
+ if(G.tq>=5&&G.tc/Math.max(1,G.tq)>=0.8)b.push({n:'Précision 80%',i:'🎯',c:'#fb7185'});
+ if((G.pomoSess||0)>=1)b.push({n:'1er Focus',i:'⏱',c:'#fbbf24'});
+ if(G.routine&&G.routine.tasks&&G.routine.tasks.every(function(x){return x.done}))b.push({n:'Routine du jour',i:'✅',c:'#34d399'});
+ if(!b.length)b.push({n:'Débutant',i:'🌱',c:'#34d399'});
+ return b;
+}
+function drawRadar(){
+ var cv=document.getElementById('radar');if(!cv)return;var ctx=cv.getContext('2d');
+ var cx=cv.width/2,cy=cv.height/2,r=Math.min(cx,cy)-46;var subs=SUB.slice(0,7),n=subs.length;ctx.clearRect(0,0,cv.width,cv.height);
+ for(var ring=1;ring<=4;ring++){ctx.beginPath();for(var i=0;i<n;i++){var a=i/n*Math.PI*2-Math.PI/2;var x=cx+Math.cos(a)*r*ring/4,y=cy+Math.sin(a)*r*ring/4;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;ctx.stroke()}
+ subs.forEach(function(s,i){var a=i/n*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.stroke();ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(s.i+' '+s.n.substring(0,5),cx+Math.cos(a)*(r+24),cy+Math.sin(a)*(r+24))});
+ ctx.beginPath();subs.forEach(function(s,i){var v=G.sc[s.id]/20;var a=i/n*Math.PI*2-Math.PI/2;var x=cx+Math.cos(a)*r*v,y=cy+Math.sin(a)*r*v;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.closePath();ctx.fillStyle='rgba(45,212,191,.22)';ctx.fill();ctx.strokeStyle='#2dd4bf';ctx.lineWidth=2;ctx.stroke();
+ subs.forEach(function(s,i){var v=G.sc[s.id]/20;var a=i/n*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r*v,cy+Math.sin(a)*r*v,4,0,Math.PI*2);ctx.fillStyle=s.col;ctx.fill()});
+}
+
+// ============================================================ XP
+function addXP(n,sub){
+ G.xp+=n;showXPP('+'+n+' XP',sub);
+ while(G.xp>=G.xpn){G.xp-=G.xpn;G.lv++;G.xpn=Math.floor(G.xpn*1.35);(function(lv){setTimeout(function(){showLV(lv)},450)})(G.lv)}
+ var x=document.getElementById('xptiny');if(x)x.style.width=Math.min(100,G.xp/G.xpn*100)+'%';
+ var hlv=document.getElementById('hl');if(hlv)hlv.textContent='Niveau '+G.lv;
+ var stx=document.getElementById('stx');if(stx)stx.textContent=G.lv;sv();
+}
+function showXPP(t,s){var el=document.getElementById('xpp');document.getElementById('xppt').textContent=t;document.getElementById('xpps').textContent=s;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1500)}
+function showLV(lv){var ts={2:'Tu progresses vite !',3:'Excellent rythme !',4:'Tu deviens un stratège !',5:'Niveau expert atteint !'};document.getElementById('lvt').textContent='Niveau '+lv+' ! 🎊';document.getElementById('lvs').textContent=ts[lv]||'Tu es inarrêtable !';document.getElementById('lvo').classList.add('show');confetti()}
+function closeLV(){document.getElementById('lvo').classList.remove('show')}
+
+// ============================================================ NAV
+function showTab(tab,btn){
+ var c=document.querySelectorAll('.tc');for(var i=0;i<c.length;i++)c[i].classList.remove('active');
+ var b=document.querySelectorAll('.nb');for(var j=0;j<b.length;j++)b[j].classList.remove('on');
+ document.getElementById('t-'+tab).classList.add('active');btn.classList.add('on');
+ if(tab==='prof'){renderProf();setTimeout(drawRadar,150)}
+ if(tab==='quiz'){renderQTabs();placeMascot('m-quiz','idle')}
+ if(tab==='fiches')renderFCTabs();
+ if(tab==='pomo')renderPomo();
+ if(tab==='dash'){renderDash();placeMascot('m-dash','happy')}
+ window.scrollTo(0,0);
+}
+
+// ============================================================ UTILS
+function toast(i,t){document.getElementById('ti').textContent=i;document.getElementById('tt').textContent=t;var el=document.getElementById('toast');el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},2800)}
+function confetti(){var cols=['#2dd4bf','#38bdf8','#a78bfa','#fb7185','#fbbf24','#34d399'];for(var i=0;i<48;i++){(function(){var el=document.createElement('div');el.className='cf';el.style.left=Math.random()*100+'vw';el.style.background=cols[Math.floor(Math.random()*cols.length)];el.style.animationDelay=Math.random()+'s';el.style.animationDuration=(2+Math.random()*2)+'s';el.style.width=(6+Math.random()*9)+'px';el.style.height=el.style.width;document.body.appendChild(el);setTimeout(function(){el.remove()},4500)})()}}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function styleLabel(s){return {visual:'visuel',audio:'auditif',reading:'lecture',kine:'pratique'}[s]||s}
+function styleAdvice(s){return {visual:'Fais des fiches colorées, des cartes mentales et des schémas.',audio:'Lis tes cours à voix haute et réécoute-toi avant de dormir.',reading:'Résume chaque chapitre en 10 lignes, la reformulation est ta force.',kine:'Multiplie les exercices : 30 min de pratique > 2h de lecture passive.'}[s]||'Adapte ta méthode.'}
+function goalLabel(g){return {r:'Avoir le brevet',ab:'Assez Bien',b:'Bien',tb:'Très Bien'}[g]||g}
+function resetAll(){if(confirm('Tout réinitialiser ? Ta progression sera effacée.')){localStorage.removeItem('bm4');location.reload()}}
+
+(function(){var s='';for(var i=0;i<40;i++){s+='<div class="star" style="left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation-delay:'+Math.random()*3+'s"></div>'}document.getElementById('stars').innerHTML=s})();
+document.getElementById('introMascot').innerHTML=mascotSVG('happy');
+
+if(ld()){launch()}else{document.getElementById('so').classList.add('active')}
+</script>
+</body>
+</html>

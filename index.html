@@ -1075,11 +1075,55 @@ function autoDiff(){
  idx=Math.max(0,Math.min(2,idx+shift));
  return lvls[idx];
 }
+// ---- Moteur de questions de maths (aléatoires, à l'infini) ----
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pk(a){return a[Math.floor(Math.random()*a.length)]}
+function mkChoices(ans,gen){
+ var set=[ans],i=0;
+ while(set.length<4&&i<300){var d=gen();i++;if(d!==ans&&set.indexOf(d)<0)set.push(d)}
+ var k=1;while(set.length<4){if(set.indexOf(ans+k)<0)set.push(ans+k);k++}
+ var order=shuffle(set.slice());return {ch:order.map(String),a:order.indexOf(ans)};
+}
+function genMath(diff){
+ if(diff==='e'){
+  var t=pk(['pct','lin','moy','aire']);
+  if(t==='pct'){var p=pk([5,10,15,20,25,50]),b=pk([20,40,60,80,120,160,200,240,300]);var ans=Math.round(b*p/100);var c=mkChoices(ans,function(){var o=pk([-12,-10,-8,-6,-5,-4,-3,3,4,5,6,8,10,12]);var d=ans+o;return d>0?d:ans+Math.abs(o)});return {q:'Combien font '+p+' % de '+b+' ?',ch:c.ch,a:c.a,e:b+' × '+(p/100)+' = '+ans+'.',d:'e',lv:4};}
+  if(t==='lin'){var a=ri(2,9),x=ri(2,12),bb=ri(1,20),cc=a*x+bb;var c2=mkChoices(x,function(){var d=x+pk([-3,-2,-1,1,2,3]);return d>0?d:x+1});return {q:'Résous : '+a+'x + '+bb+' = '+cc,ch:c2.ch,a:c2.a,e:a+'x = '+cc+' − '+bb+' = '+(cc-bb)+', donc x = '+(cc-bb)+' / '+a+' = '+x+'.',d:'e',lv:4};}
+  if(t==='moy'){var n1=ri(4,18),n2=ri(4,18),n3=ri(4,18),n4=ri(4,18);while((n1+n2+n3+n4)%4!==0){n4=ri(4,18)}var m=(n1+n2+n3+n4)/4;var c3=mkChoices(m,function(){var d=m+pk([-3,-2,-1,1,2,3]);return d>0?d:m+1});return {q:'Quelle est la moyenne de '+n1+', '+n2+', '+n3+' et '+n4+' ?',ch:c3.ch,a:c3.a,e:'('+n1+'+'+n2+'+'+n3+'+'+n4+') ÷ 4 = '+(n1+n2+n3+n4)+' ÷ 4 = '+m+'.',d:'e',lv:5};}
+  var L=ri(4,15),l=ri(3,12);var per=2*(L+l);var c4=mkChoices(per,function(){var d=per+pk([-6,-4,-2,2,4,6,L,l]);return d>0?d:per+2});return {q:'Périmètre d\'un rectangle de longueur '+L+' cm et largeur '+l+' cm ?',ch:c4.ch.map(function(x){return x+' cm'}),a:c4.a,e:'P = 2 × (L + l) = 2 × ('+L+' + '+l+') = '+per+' cm.',d:'e',lv:5};
+ }
+ if(diff==='m'){
+  var t=pk(['dev','solve2','pyth','coef']);
+  if(t==='dev'){var a=ri(2,9);var ans='x² + '+(2*a)+'x + '+(a*a);var opts=[ans,'x² + '+(a*a),'x² + '+a+'x + '+(a*a),'x² + '+(2*a)+'x + '+(2*a)];opts=opts.filter(function(v,i){return opts.indexOf(v)===i});while(opts.length<4)opts.push('x² + '+(2*a)+'x + '+(a*a+opts.length));var o=shuffle(opts.slice());return {q:'Développe : (x + '+a+')²',ch:o,a:o.indexOf(ans),e:'(a+b)² = a² + 2ab + b² → x² + '+(2*a)+'x + '+(a*a)+'.',d:'m',lv:3};}
+  if(t==='solve2'){var a=ri(2,6),cc=ri(1,4)+a,b1=ri(1,12),d1=ri(1,12);var x=ri(1,8);b1=ri(1,10);d1=(a*x+b1)-(cc*x);if(d1>20||d1< -20){d1=2;b1=(cc*x+d1)-(a*x)}var X=x;var ch=mkChoices(X,function(){var v=X+pk([-3,-2,-1,1,2,3]);return v>0?v:X+1});return {q:'Résous : '+a+'x + '+b1+' = '+cc+'x + '+d1,ch:ch.ch,a:ch.a,e:'On regroupe : ('+a+'−'+cc+')x = '+d1+' − '+b1+', donc x = '+X+'.',d:'m',lv:3};}
+  if(t==='pyth'){var tr=pk([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25]]);var c5=mkChoices(tr[2],function(){var d=tr[2]+pk([-3,-2,-1,1,2,3]);return d>0?d:tr[2]+1});return {q:'Triangle rectangle de côtés '+tr[0]+' et '+tr[1]+'. Quelle est l\'hypoténuse ?',ch:c5.ch,a:c5.a,e:'Pythagore : '+tr[0]+'² + '+tr[1]+'² = '+(tr[0]*tr[0])+' + '+(tr[1]*tr[1])+' = '+(tr[2]*tr[2])+' = '+tr[2]+'².',d:'m',lv:4};}
+  var p=pk([10,15,20,25,30,40]);var ans='× '+(1+p/100);var opts=[ans,'× '+(p/100),'× '+(1-p/100),'+ '+p];opts=opts.filter(function(v,i){return opts.indexOf(v)===i});var kk=2;while(opts.length<4){var cand='× '+(1+(p+kk*10)/100);if(opts.indexOf(cand)<0)opts.push(cand);kk++}var o2=shuffle(opts.slice());return {q:'Augmenter un prix de '+p+' %, c\'est multiplier par combien ?',ch:o2,a:o2.indexOf(ans),e:'+'+p+' % → × (1 + '+p+'/100) = × '+(1+p/100)+'.',d:'m',lv:4};
+ }
+ // hard
+ var t=pk(['quad','prod','pct2']);
+ if(t==='quad'){var r=ri(1,6),s=ri(1,6);while(s===r)s=ri(1,6);var som=r+s,pro=r*s;var ans='x = '+Math.min(r,s)+' ou x = '+Math.max(r,s);var opts=[ans,'x = '+(-Math.min(r,s))+' ou x = '+(-Math.max(r,s)),'x = '+Math.min(r,s)+' ou x = '+(Math.max(r,s)+1),'x = '+(Math.min(r,s)+1)+' ou x = '+Math.max(r,s)];opts=opts.filter(function(v,i){return opts.indexOf(v)===i});while(opts.length<4)opts.push('x = '+ri(1,9)+' ou x = '+ri(1,9));var o=shuffle(opts.slice());return {q:'Résous : x² − '+som+'x + '+pro+' = 0',ch:o,a:o.indexOf(ans),e:'On cherche 2 nombres de somme '+som+' et produit '+pro+' : '+r+' et '+s+'.',d:'h',lv:3};}
+ if(t==='prod'){var a=ri(1,5),b=ri(1,6);var ans='x² + '+(a+b)+'x + '+(a*b);var opts=[ans,'x² + '+(a*b)+'x + '+(a+b),'x² + '+(a+b)+'x + '+(a+b),'x² + '+(a*b)];opts=opts.filter(function(v,i){return opts.indexOf(v)===i});while(opts.length<4)opts.push('x² + '+(a+b)+'x + '+(a*b+opts.length));var o=shuffle(opts.slice());return {q:'Développe : (x + '+a+')(x + '+b+')',ch:o,a:o.indexOf(ans),e:'(x+a)(x+b) = x² + (a+b)x + ab = x² + '+(a+b)+'x + '+(a*b)+'.',d:'h',lv:3};}
+ var p=pk([10,20,25,50]),base=pk([80,120,160,200,240]);var v1=Math.round(base*(1+p/100));var ans=v1;var c6=mkChoices(ans,function(){var d=ans+pk([-20,-15,-10,10,15,20,base*p/100]);return d>0?Math.round(d):ans+5});return {q:'Un article de '+base+' € augmente de '+p+' %. Quel est le nouveau prix ?',ch:c6.ch.map(function(x){return x+' €'}),a:c6.a,e:base+' × '+(1+p/100)+' = '+v1+' €.',d:'h',lv:3};
+}
+
 function startQuiz(){
  document.getElementById('qres').classList.remove('show');
- var pool=QB[qSub]||QB.ma;var eff=qDiff;if(qDiff==='auto')eff=autoDiff();
- var filtered=pool;if(eff!=='mix')filtered=pool.filter(function(q){return q.d===eff});if(filtered.length<3)filtered=pool;
- qQs=shuffle(filtered.slice()).slice(0,Math.min(filtered.length,6));qIdx=0;qOk=0;
+ var eff=qDiff;if(qDiff==='auto')eff=autoDiff();
+ qIdx=0;qOk=0;
+ if(qSub==='ma'){
+  // moteur de génération : questions de maths aléatoires (infinies)
+  qQs=[];for(var gi=0;gi<6;gi++){var dd=eff;if(qDiff==='mix')dd=['e','m','h'][Math.floor(Math.random()*3)];qQs.push(genMath(dd))}
+ }else{
+  var pool=QB[qSub]||QB.ma;
+  var filtered=pool;if(eff!=='mix')filtered=pool.filter(function(q){return q.d===eff});if(filtered.length<3)filtered=pool;
+  // anti-répétition : on évite les questions vues récemment
+  G.seen=G.seen||{};var seen=G.seen[qSub]||[];
+  var fresh=filtered.filter(function(q){return seen.indexOf(q.q)<0});
+  if(fresh.length<Math.min(4,filtered.length))fresh=filtered;
+  qQs=shuffle(fresh.slice()).slice(0,Math.min(fresh.length,6));
+  var ns=seen.concat(qQs.map(function(q){return q.q}));
+  G.seen[qSub]=ns.slice(Math.max(0,ns.length-12));sv();
+ }
  var sObj=SUB.find(function(x){return x.id===qSub});var sName=sObj?sObj.n:'';
  var lvlTxt=qDiff==='auto'?('niveau '+({e:'facile 🟢',m:'moyen 🟡',h:'difficile 🔴'}[eff])+' (adapté à toi)'):'niveau choisi';
  document.getElementById('m-quiz-msg').innerHTML='On bosse <b>'+sName+'</b> — '+lvlTxt+'. '+qQs.length+' questions, lis bien chaque explication après ta réponse. C\'est parti ! 🚀';

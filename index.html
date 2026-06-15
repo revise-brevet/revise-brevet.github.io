@@ -225,6 +225,24 @@ input[type=range]{width:84px;accent-color:var(--p)}
 #auth input:focus{outline:none;border-color:var(--p)}
 .cloud-box{background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(45,212,191,.06));border:1px solid rgba(56,189,248,.22);border-radius:13px;padding:13px;margin-bottom:10px}
 .cloud-on{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;color:var(--p)}
+.coins{display:flex;align-items:center;gap:4px;background:rgba(251,191,36,.14);border:1px solid rgba(251,191,36,.32);padding:5px 9px;border-radius:20px;font-size:.8rem;font-weight:800;color:var(--amber);flex-shrink:0;cursor:pointer}
+.shop-item{display:flex;align-items:center;gap:11px;background:rgba(10,14,30,.45);border:1px solid var(--b);border-radius:13px;padding:12px;margin-bottom:9px}
+.shop-ic{font-size:1.6rem}
+.shop-info{flex:1}
+.shop-n{font-size:.88rem;font-weight:700}
+.shop-d{font-size:.72rem;color:var(--t2)}
+.shop-buy{padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(120deg,var(--amber),#f59e0b);color:#3a2a00;font-weight:800;font-size:.8rem;cursor:pointer;white-space:nowrap}
+.shop-buy:disabled{opacity:.45;cursor:default}
+.lb{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:12px;margin-bottom:6px;background:rgba(10,14,30,.4);border:1px solid var(--b)}
+.lb.me{background:linear-gradient(120deg,rgba(45,212,191,.16),rgba(56,189,248,.1));border-color:rgba(45,212,191,.4)}
+.lb-rk{font-size:.9rem;font-weight:900;width:26px;text-align:center;color:var(--t2)}
+.lb-av{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;color:#04221f;flex-shrink:0}
+.lb-n{flex:1;font-size:.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-xp{font-size:.82rem;font-weight:800;color:var(--p2)}
+.scratch{margin-top:10px}
+.scratch-t{width:100%;min-height:70px;background:rgba(10,14,30,.6);border:1px dashed var(--bh);border-radius:11px;color:var(--t);font-size:.95rem;padding:10px;font-family:'Courier New',monospace;resize:vertical}
+.scratch-t:focus{outline:none;border-color:var(--amber)}
+.scratch-btn{font-size:.76rem;font-weight:700;color:var(--amber);background:rgba(251,191,36,.1);border:1px solid var(--b);border-radius:9px;padding:6px 11px;cursor:pointer;margin-top:9px}
 .qres{text-align:center;padding:32px 14px;display:none}
 .qres.show{display:block;animation:pop .5s ease}
 .re{font-size:4.6rem;display:block;animation:float 2s ease-in-out infinite;margin-bottom:8px}
@@ -370,7 +388,7 @@ input[type=range]{width:84px;accent-color:var(--p)}
 .rdc-box ol,.rdc-box ul{margin-left:18px;font-size:.86rem;line-height:1.6;color:var(--t2)}
 .rdc-box p{font-size:.88rem;line-height:1.6;color:var(--t)}
 .rdc-self{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-@media(max-width:480px){.srow{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:1fr}.styleg{grid-template-columns:1fr}.cdbig-num{font-size:3rem;min-width:78px}.nb{font-size:.58rem}.nb .ni{font-size:1.2rem}}
+@media(max-width:480px){.srow{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:1fr}.styleg{grid-template-columns:1fr}.cdbig-num{font-size:3rem;min-width:78px}.nb{font-size:.55rem}.nb .ni{font-size:1.15rem}.hdr{gap:6px;padding:0 9px}.hname{max-width:54px;font-size:.78rem}.hlv{font-size:.62rem}.coins,.streak{padding:4px 7px;font-size:.72rem}.jpill{padding:4px 8px}.jpill b{font-size:.92rem}.hav{width:30px;height:30px}}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--b);border-radius:2px}
 </style>
 </head>
@@ -404,6 +422,8 @@ input[type=range]{width:84px;accent-color:var(--p)}
       <select id="iclass"><option value="3e">3ème — je passe le brevet cette année</option><option value="4e">4ème — je prends de l'avance</option><option value="5e">5ème — je commence tôt</option></select>
       <label>Mention que tu vises</label>
       <select id="igoal"><option value="r">Avoir le brevet (10+)</option><option value="ab">Assez Bien (12+)</option><option value="b" selected>Bien (14+)</option><option value="tb">Très Bien (16+)</option></select>
+      <label>Ta 2ème langue (LV2)</label>
+      <select id="ilv2"><option value="es">🇪🇸 Espagnol</option><option value="de">🇩🇪 Allemand</option><option value="it">🇮🇹 Italien</option></select>
       <button class="btn" onclick="os(2)">Continuer →</button>
     </div>
     <div class="ob-step" id="os2">
@@ -433,6 +453,7 @@ input[type=range]{width:84px;accent-color:var(--p)}
     <div class="hlogo">BM</div>
     <div class="hav" id="hav">?</div>
     <div class="hinfo"><div class="hname" id="hn">—</div><div class="hlv" id="hl">Niveau 1</div></div>
+    <div class="coins" id="coins" onclick="openShop()">🪙 <span id="coinsval">0</span></div>
     <div class="streak" id="stk">🔥 <span id="stkn">0</span></div>
     <div class="jpill"><b id="jdays">—</b><span>Jours brevet</span></div>
     <div class="xptiny" id="xptiny" style="width:0%"></div>
@@ -486,11 +507,14 @@ input[type=range]{width:84px;accent-color:var(--p)}
       <div class="sg" id="dsg"></div>
       <div class="sec">💡 Conseils pour toi</div>
       <div id="drec"></div>
+
+      <div class="sec">🏆 Classement de la semaine</div>
+      <div id="lb-list"></div>
     </div>
 
     <!-- QUIZ -->
     <div class="tc" id="t-quiz">
-      <div class="hello">Quiz <b>Adaptatif</b> ⚡</div>
+      <div class="hello">Ta <b>Route</b> 🛤️</div>
       <div class="hellosub">Questions de 5ᵉ, 4ᵉ et 3ᵉ — la difficulté s'ajuste à ton niveau.</div>
       <div class="mascot-row" style="margin-bottom:14px"><div id="m-quiz"></div><div class="bubble"><div class="who">Zo</div><div class="msg" id="m-quiz-msg">Choisis une matière et lance-toi !</div></div></div>
       <div class="stabs" id="qtabs"></div>
@@ -596,7 +620,7 @@ input[type=range]{width:84px;accent-color:var(--p)}
 
   <nav class="nav">
     <button class="nb on" onclick="showTab('dash',this)"><span class="ni">🏠</span>Accueil</button>
-    <button class="nb" onclick="showTab('quiz',this)"><span class="ni">⚡</span>Quiz</button>
+    <button class="nb" onclick="showTab('quiz',this)"><span class="ni">🛤️</span>Route</button>
     <button class="nb" onclick="showTab('fiches',this)"><span class="ni">🃏</span>Fiches</button>
     <button class="nb" onclick="showTab('pomo',this)"><span class="ni">⏱</span>Focus</button>
     <button class="nb" onclick="showTab('redac',this)"><span class="ni">✍️</span>Rédac</button>
@@ -629,6 +653,14 @@ input[type=range]{width:84px;accent-color:var(--p)}
   <div style="text-align:center;margin-top:12px"><button class="rbtn2" onclick="closeAuth()" style="font-size:.82rem">Fermer</button></div>
 </div></div>
 
+<!-- BOUTIQUE -->
+<div class="lvo" id="shop"><div class="lvc" style="max-width:420px;width:92%;text-align:left">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-size:1.15rem;font-weight:900">🛒 Boutique</div><div class="coins" style="cursor:default">🪙 <span id="shop-coins">0</span></div></div>
+  <div style="font-size:.8rem;color:var(--t2);margin-bottom:14px">Gagne des pièces en faisant des leçons, dépense-les ici !</div>
+  <div id="shop-items"></div>
+  <div style="text-align:center;margin-top:12px"><button class="rbtn2" onclick="closeShop()" style="font-size:.82rem">Fermer</button></div>
+</div></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================================ MASCOT
@@ -638,8 +670,10 @@ function mascotSVG(mood){
   var mouth='<path d="M44 66 Q52 73 60 66" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
   if(mood==='happy'){eyeL='<path d="M33 52 Q40 45 47 52" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';eyeR='<path d="M57 52 Q64 45 71 52" stroke="#0a0e1f" stroke-width="3.5" fill="none" stroke-linecap="round"/>';mouth='<path d="M42 64 Q52 76 62 64" stroke="#0a0e1f" stroke-width="4" fill="none" stroke-linecap="round"/>';}
   var uid='zg'+Math.random().toString(36).slice(2,8);
+  var gold=(typeof G!=='undefined'&&G&&G.zoGold);
+  var stops=gold?'<stop offset="0%" stop-color="#fff3b0"/><stop offset="55%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#d97706"/>':'<stop offset="0%" stop-color="#7ef0e0"/><stop offset="55%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#1aa7c9"/>';
   return '<svg class="mascot '+(mood==='happy'?'happy':'')+'" viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg">'+
-    '<defs><radialGradient id="'+uid+'" cx="40%" cy="35%"><stop offset="0%" stop-color="#7ef0e0"/><stop offset="55%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#1aa7c9"/></radialGradient></defs>'+
+    '<defs><radialGradient id="'+uid+'" cx="40%" cy="35%">'+stops+'</radialGradient></defs>'+
     '<path d="M52 6 L60 22 L52 14 Z" fill="#fbbf24"/><circle cx="52" cy="9" r="4" fill="#fbbf24"/>'+
     '<path d="M52 18 C74 18 90 36 90 58 C90 80 74 96 52 96 C30 96 14 80 14 58 C14 36 30 18 52 18 Z" fill="url(#'+uid+')"/>'+
     '<ellipse cx="42" cy="38" rx="11" ry="7" fill="rgba(255,255,255,.45)"/>'+
@@ -760,13 +794,39 @@ an:[{q:"Quand utiliser le present perfect ?",a:"Action passée liée au présent
  {q:"Prétérit régulier : règle ?",a:"Verbe + -ed (worked, played). Irréguliers à apprendre par cœur."}],
 };
 
+// ---- LV2 : Espagnol / Allemand / Italien ----
+var LANG={
+ es:{n:'Espagnol',i:'🇪🇸',qb:[
+  {q:"« ¿___ es tu nombre? »",ch:["Qué","Cuál","Cómo","Dónde"],a:1,e:"¿Cuál es tu nombre ? (identification).",d:'e',lv:5},
+  {q:"« Yo » + hablar au présent =",ch:["hablo","hablas","habla","hablamos"],a:0,e:"Yo hablo.",d:'e',lv:5},
+  {q:"« Tengo hambre » signifie :",ch:["J'ai froid","J'ai faim","J'ai peur","J'ai sommeil"],a:1,e:"Tener hambre = avoir faim.",d:'e',lv:4},
+  {q:"Le passé composé espagnol se forme avec :",ch:["ser + participe","haber + participe","tener + participe","estar + participe"],a:1,e:"He/has/ha + participe passé (he hablado).",d:'m',lv:3},
+  {q:"« Voy a comer » exprime :",ch:["le passé","un futur proche","un ordre","une habitude"],a:1,e:"Ir a + infinitif = futur proche.",d:'m',lv:3}],
+ fc:[{q:"Conjugue SER au présent (yo, tú, él)",a:"soy, eres, es"},{q:"Les couleurs : rouge, bleu, vert ?",a:"rojo, azul, verde"},{q:"Futur proche en espagnol ?",a:"ir a + infinitif (voy a hablar = je vais parler)"}]},
+ de:{n:'Allemand',i:'🇩🇪',qb:[
+  {q:"« Wie heißt du? » signifie :",ch:["Comment vas-tu ?","Comment t'appelles-tu ?","Où vas-tu ?","Quel âge as-tu ?"],a:1,e:"Wie heißt du ? = Comment t'appelles-tu ?",d:'e',lv:5},
+  {q:"« Ich » + sein (être) =",ch:["bin","bist","ist","sind"],a:0,e:"Ich bin (je suis).",d:'e',lv:5},
+  {q:"« Danke » veut dire :",ch:["Bonjour","Merci","Pardon","Au revoir"],a:1,e:"Danke = merci.",d:'e',lv:5},
+  {q:"L'article défini masculin (nominatif) :",ch:["die","das","der","den"],a:2,e:"der (masc.), die (fém.), das (neutre).",d:'m',lv:4},
+  {q:"Le verbe se place en 2ème position dans :",ch:["une question","une principale déclarative","jamais","une subordonnée"],a:1,e:"En allemand, le verbe conjugué est en 2ème position dans la phrase déclarative.",d:'m',lv:3}],
+ fc:[{q:"Conjugue SEIN (ich, du, er)",a:"ich bin, du bist, er ist"},{q:"Les 3 genres + articles définis ?",a:"der (masc), die (fém), das (neutre)"},{q:"Compter de 1 à 5 ?",a:"eins, zwei, drei, vier, fünf"}]},
+ it:{n:'Italien',i:'🇮🇹',qb:[
+  {q:"« Come ti chiami? » signifie :",ch:["Comment vas-tu ?","Comment t'appelles-tu ?","Où es-tu ?","Quel âge as-tu ?"],a:1,e:"Come ti chiami ? = Comment t'appelles-tu ?",d:'e',lv:5},
+  {q:"« Io » + essere (être) =",ch:["sono","sei","è","siamo"],a:0,e:"Io sono (je suis).",d:'e',lv:5},
+  {q:"« Grazie » veut dire :",ch:["Bonjour","Merci","Pardon","Oui"],a:1,e:"Grazie = merci.",d:'e',lv:5},
+  {q:"Le pluriel de « il libro » (le livre) :",ch:["i libri","le libri","gli libro","i libro"],a:0,e:"il libro → i libri.",d:'m',lv:4},
+  {q:"Le passé composé italien se forme avec :",ch:["essere ou avere + participe","solo avere","solo essere","fare + participe"],a:0,e:"Passato prossimo : avere/essere + participe passé.",d:'m',lv:3}],
+ fc:[{q:"Conjugue ESSERE (io, tu, lui)",a:"io sono, tu sei, lui è"},{q:"Compter de 1 à 5 ?",a:"uno, due, tre, quattro, cinque"},{q:"Les couleurs : rouge, bleu, vert ?",a:"rosso, blu, verde"}]},
+};
+function applyLV2(){var l=(typeof G!=='undefined'&&G&&G.lv2)||'es';var d=LANG[l]||LANG.es;var s=SUB.find(function(x){return x.id==='es'});if(s){s.n=d.n;s.i=d.i}QB.es=d.qb;FC.es=d.fc;}
+
 // ============================================================ STATE
 var G={};
 function newState(name,goal,style,cls){
  var sc={},ms={};
  SUB.forEach(function(s){sc[s.id]=10;ms[s.id]={};s.t.forEach(function(t){ms[s.id][t]=25+Math.floor(Math.random()*30)})});
- return {name:name,goal:goal,style:style,cls:cls,lv:1,xp:0,xpn:100,streak:1,lastD:new Date().toDateString(),
-  sessions:1,tq:0,tc:0,sc:sc,ms:ms,hist:[],pomoSess:0,pomoLog:[],
+ return {name:name,goal:goal,style:style,cls:cls,lv2:(window._lv2||'es'),lv:1,xp:0,xpn:100,xpTotal:0,coins:0,boost:0,streak:1,lastD:new Date().toDateString(),
+  sessions:1,tq:0,tc:0,sc:sc,ms:ms,hist:[],pomoSess:0,pomoLog:[],board:null,
   cog:{times:[],hardOk:0,hardTot:0,easyOk:0,easyTot:0,fast:0,slow:0},routine:null};
 }
 function sv(){G.updatedAt=Date.now();localStorage.setItem('bm4',JSON.stringify(G));cloudPushDebounced()}
@@ -891,13 +951,22 @@ function renderDiag(){
  document.getElementById('dgp').style.width=(diagIdx/diagQs.length*100)+'%';
  document.getElementById('dgarea').innerHTML='<div class="diag-q">'+q.q+' <span class="lvtag">'+q.lv+'ᵉ</span></div><div class="diag-ch">'+q.ch.map(function(c,i){return '<button class="diag-b" onclick="diagAns('+i+')">'+c+'</button>'}).join('')+'</div>';
 }
+var diagLock=false;
 function diagAns(i){
+ if(diagLock)return;diagLock=true;
  var q=diagQs[diagIdx];var dt=(Date.now()-diagStart)/1000;diagTimes.push(dt);
  var w=DW[q.d||'m'];diagWTot+=w;
  if(diagSub[q.s]===undefined)diagSub[q.s]={ok:0,tot:0};diagSub[q.s].tot++;
- if(i===q.a){diagScore++;diagWOk+=w;diagSub[q.s].ok++}
- diagIdx++;
- if(diagIdx>=diagQs.length){document.getElementById('dgp').style.width='100%';setTimeout(function(){os(4)},250)}else renderDiag();
+ var correct=(i===q.a);
+ if(correct){diagScore++;diagWOk+=w;diagSub[q.s].ok++}
+ var btns=document.querySelectorAll('#dgarea .diag-b');
+ for(var b=0;b<btns.length;b++)btns[b].style.pointerEvents='none';
+ if(btns[q.a]){btns[q.a].style.borderColor='var(--ok)';btns[q.a].style.color='var(--ok)'}
+ if(!correct&&btns[i]){btns[i].style.borderColor='var(--ko)';btns[i].style.color='var(--ko)'}
+ setTimeout(function(){
+  diagLock=false;diagIdx++;
+  if(diagIdx>=diagQs.length){document.getElementById('dgp').style.width='100%';setTimeout(function(){os(4)},200)}else renderDiag();
+ },850);
 }
 function renderRI(){
  var ratio=diagWTot>0?diagWOk/diagWTot:0.5;
@@ -909,7 +978,9 @@ function renderRI(){
 }
 function finishOB(){
  var nm=document.getElementById('iname').value.trim()||'Élève';
+ var lv2el=document.getElementById('ilv2');window._lv2=lv2el?lv2el.value:'es';
  G=newState(nm,document.getElementById('igoal').value,selStyle||'visual',document.getElementById('iclass').value);
+ applyLV2();
  SUB.forEach(function(s){if(initSc[s.id]!==undefined)G.sc[s.id]=initSc[s.id]});
  G.cog.times=diagTimes.slice();diagTimes.forEach(function(t){if(t<5)G.cog.fast++;else G.cog.slow++});
  if(selStyleScores)G.styleScores=selStyleScores;
@@ -920,7 +991,7 @@ function finishOB(){
 function launch(){
  document.getElementById('so').classList.remove('active');
  document.getElementById('sa').classList.add('active');
- checkStreak();ensureRoutine();renderAll();
+ applyLV2();checkStreak();ensureRoutine();renderAll();
  placeMascot('m-dash','happy');placeMascot('m-quiz','idle');placeMascot('m-ss','idle');
 }
 function checkStreak(){
@@ -933,7 +1004,7 @@ function renderAll(){
  document.getElementById('hl').textContent='Niveau '+G.lv;
  document.getElementById('stkn').textContent=G.streak;
  document.getElementById('xptiny').style.width=Math.min(100,G.xp/G.xpn*100)+'%';
- renderJ();renderDash();renderQTabs();renderFCTabs();renderPomo();
+ renderCoins();renderJ();renderDash();renderQTabs();renderFCTabs();renderPomo();
 }
 
 // ============================================================ COUNTDOWN
@@ -1036,6 +1107,7 @@ function renderDash(){
   '<div class="tip"><div class="tip-i">🎯</div><div class="tip-t"><b>Priorité :</b> '+srt[0].n+' et '+srt[1].n+' — tes notes les plus basses, le plus d\'impact sur ta mention.</div></div>'+
   '<div class="tip"><div class="tip-i">⚡</div><div class="tip-t"><b>Point fort :</b> '+srt[srt.length-1].n+' ('+G.sc[srt[srt.length-1].id].toFixed(1)+'/20). Entretiens-le avec 1 quiz/semaine.</div></div>'+
   '<div class="tip"><div class="tip-i">🧠</div><div class="tip-t"><b>Ton style ('+styleLabel(G.style)+') :</b> '+styleAdvice(G.style)+'</div></div>';
+ renderLeaderboard();
 }
 function computeScores(){
  var ws=0,wc=0;SUB.forEach(function(s){ws+=G.sc[s.id]*s.c;wc+=s.c});var cc=ws/wc;
@@ -1112,7 +1184,7 @@ function startQuiz(){
  qIdx=0;qOk=0;
  if(qSub==='ma'){
   // moteur de génération : questions de maths aléatoires (infinies)
-  qQs=[];for(var gi=0;gi<6;gi++){var dd=eff;if(qDiff==='mix')dd=['e','m','h'][Math.floor(Math.random()*3)];qQs.push(genMath(dd))}
+  qQs=[];for(var gi=0;gi<8;gi++){var dd=eff;if(qDiff==='mix')dd=['e','m','h'][Math.floor(Math.random()*3)];qQs.push(genMath(dd))}
  }else{
   var pool=QB[qSub]||QB.ma;
   var filtered=pool;if(eff!=='mix')filtered=pool.filter(function(q){return q.d===eff});if(filtered.length<3)filtered=pool;
@@ -1120,7 +1192,7 @@ function startQuiz(){
   G.seen=G.seen||{};var seen=G.seen[qSub]||[];
   var fresh=filtered.filter(function(q){return seen.indexOf(q.q)<0});
   if(fresh.length<Math.min(4,filtered.length))fresh=filtered;
-  qQs=shuffle(fresh.slice()).slice(0,Math.min(fresh.length,6));
+  qQs=shuffle(fresh.slice()).slice(0,Math.min(fresh.length,8));
   var ns=seen.concat(qQs.map(function(q){return q.q}));
   G.seen[qSub]=ns.slice(Math.max(0,ns.length-12));sv();
  }
@@ -1135,7 +1207,7 @@ function renderQ(){
  qTime=(q.d==='h')?22:(q.d==='m')?28:38;qAns=false;qQStart=Date.now();
  var dc={e:'#34d399',m:'#fbbf24',h:'#fb7185'}[q.d]||'#a78bfa';var dl={e:'Facile',m:'Moyen',h:'Difficile'}[q.d]||'Mix';
  var lvtag=q.lv?'<span class="lvtag">'+q.lv+'ᵉ</span>':'';
- document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><button class="qb-idk" id="qidk" onclick="idk()">🤷 Je ne sais pas</button><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
+ document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><button class="qb-idk" id="qidk" onclick="idk()">🤷 Je ne sais pas</button><button class="scratch-btn" onclick="toggleScratch()">✏️ Brouillon (calculs)</button><div class="scratch" id="scratch" style="display:none"><textarea class="scratch-t" id="scratch-t" placeholder="Pose tes calculs ici... (137 − 48 = ...)"></textarea></div><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
  qTmr=setInterval(function(){qTime--;var tv=document.getElementById('tv');if(tv){tv.textContent=qTime;tv.parentNode.style.color=qTime<=8?'var(--rose)':'var(--amber)'}if(qTime<=0){clearInterval(qTmr);if(!qAns)timeQ()}},1000);
 }
 function ans(c){
@@ -1148,11 +1220,12 @@ function ans(c){
  if(dt<7)G.cog.fast++;else G.cog.slow++;
  if(q.d==='h'){G.cog.hardTot++;if(c===q.a)G.cog.hardOk++}
  if(q.d==='e'){G.cog.easyTot++;if(c===q.a)G.cog.easyOk++}
- if(c===q.a){btns[c].classList.add('ok');qOk++;addXP(10+Math.floor(qTime*0.5),'✅ Correct !');G.sc[qSub]=Math.min(20,G.sc[qSub]+0.1);var s=SUB.find(function(x){return x.id===qSub});var tp=s.t[Math.floor(Math.random()*s.t.length)];G.ms[qSub][tp]=Math.min(100,(G.ms[qSub][tp]||30)+5);cheer('m-quiz')}
- else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);toast('📖','Lis bien l\'explication')}
+ if(c===q.a){btns[c].classList.add('ok');qOk++;addXP(10+Math.floor(qTime*0.5),'✅ Correct !');addCoins(2);G.sc[qSub]=Math.min(20,G.sc[qSub]+0.1);var s=SUB.find(function(x){return x.id===qSub});var tp=s.t[Math.floor(Math.random()*s.t.length)];G.ms[qSub][tp]=Math.min(100,(G.ms[qSub][tp]||30)+5);cheer('m-quiz');document.getElementById('m-quiz-msg').innerHTML=pk(['Bravo, c\'est ça ! 🎉','Parfait ! 💪','Tu gères ! ⭐'])}
+ else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);document.getElementById('m-quiz-msg').innerHTML='<b>Pas grave !</b> '+q.e}
  document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');
  G.tq++;if(c===q.a)G.tc++;sv();
 }
+function toggleScratch(){var s=document.getElementById('scratch');if(s)s.style.display=s.style.display==='none'?'block':'none';var t=document.getElementById('scratch-t');if(t&&s.style.display==='block')t.focus()}
 function timeQ(){if(qAns)return;qAns=true;var q=qQs[qIdx];var btns=document.querySelectorAll('.qb');for(var i=0;i<btns.length;i++)btns[i].classList.add('lk');btns[q.a].classList.add('ok');document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');toast('⏰','Temps écoulé !');G.tq++;sv()}
 function idk(){
  if(qAns)return;qAns=true;clearInterval(qTmr);
@@ -1171,12 +1244,16 @@ function showQRes(){
  var em=p>=80?'🏆':p>=60?'😊':p>=40?'💪':'📚';
  var ms=p>=80?'Excellent, tu maîtrises !':p>=60?'Bon boulot, continue !':p>=40?'Pas mal, encore un effort !':'Révise et reviens, tu vas y arriver !';
  document.getElementById('re').textContent=em;document.getElementById('rsc').textContent=qOk+'/'+qQs.length;document.getElementById('rm').textContent=ms;
- document.getElementById('rd').innerHTML='<div class="rrow"><span style="color:var(--t2)">Score</span><b>'+p+'%</b></div><div class="rrow"><span style="color:var(--t2)">Bonnes réponses</span><b style="color:var(--ok)">'+qOk+'</b></div><div class="rrow"><span style="color:var(--t2)">À retravailler</span><b style="color:var(--ko)">'+(qQs.length-qOk)+'</b></div><div class="rrow"><span style="color:var(--t2)">XP gagné</span><b style="color:var(--p)">+'+(qOk*15)+'</b></div>';
+ var coinsWon=qOk*4+(p===100?20:0);
+ var boosted=(G.boost||0)>0;
+ document.getElementById('rd').innerHTML='<div class="rrow"><span style="color:var(--t2)">Score</span><b>'+p+'%</b></div><div class="rrow"><span style="color:var(--t2)">Bonnes réponses</span><b style="color:var(--ok)">'+qOk+'</b></div><div class="rrow"><span style="color:var(--t2)">À retravailler</span><b style="color:var(--ko)">'+(qQs.length-qOk)+'</b></div><div class="rrow"><span style="color:var(--t2)">XP gagné</span><b style="color:var(--p)">+'+(qOk*15)+(boosted?' ⚡x2':'')+'</b></div><div class="rrow"><span style="color:var(--t2)">Pièces gagnées</span><b style="color:var(--amber)">+'+coinsWon+' 🪙</b></div>';
  document.getElementById('qarea').innerHTML='';document.getElementById('qres').classList.add('show');
- var sb=SUB.find(function(s){return s.id===qSub});
- G.hist.unshift({sub:qSub,icon:sb.i,name:sb.n,score:qOk+'/'+qQs.length,date:new Date().toLocaleDateString('fr-FR')});
+ var sbj=SUB.find(function(s){return s.id===qSub});
+ G.hist.unshift({sub:qSub,icon:sbj.i,name:sbj.n,score:qOk+'/'+qQs.length,date:new Date().toLocaleDateString('fr-FR')});
  if(G.hist.length>20)G.hist.pop();
  addXP(qOk*15+(p===100?40:0),'Quiz terminé !');
+ addCoins(coinsWon);
+ if(G.boost&&G.boost>0)G.boost=G.boost-1; // boost consommé
  if(p===100){confetti();toast('🏆','Score parfait ! Incroyable !')}
  sv();renderDash();
 }
@@ -1372,15 +1449,65 @@ function drawRadar(){
 
 // ============================================================ XP
 function addXP(n,sub){
- G.xp+=n;showXPP('+'+n+' XP',sub);
+ if(G.boost&&G.boost>0)n=n*2;
+ G.xp+=n;G.xpTotal=(G.xpTotal||0)+n;showXPP('+'+n+' XP'+(G.boost>0?' ⚡x2':''),sub);
  while(G.xp>=G.xpn){G.xp-=G.xpn;G.lv++;G.xpn=Math.floor(G.xpn*1.35);(function(lv){setTimeout(function(){showLV(lv)},450)})(G.lv)}
  var x=document.getElementById('xptiny');if(x)x.style.width=Math.min(100,G.xp/G.xpn*100)+'%';
  var hlv=document.getElementById('hl');if(hlv)hlv.textContent='Niveau '+G.lv;
  var stx=document.getElementById('stx');if(stx)stx.textContent=G.lv;sv();
 }
+function addCoins(n){G.coins=(G.coins||0)+n;var c=document.getElementById('coinsval');if(c)c.textContent=G.coins;sv()}
+function renderCoins(){var c=document.getElementById('coinsval');if(c)c.textContent=(G.coins||0)}
 function showXPP(t,s){var el=document.getElementById('xpp');document.getElementById('xppt').textContent=t;document.getElementById('xpps').textContent=s;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1500)}
 function showLV(lv){var ts={2:'Tu progresses vite !',3:'Excellent rythme !',4:'Tu deviens un stratège !',5:'Niveau expert atteint !'};document.getElementById('lvt').textContent='Niveau '+lv+' ! 🎊';document.getElementById('lvs').textContent=ts[lv]||'Tu es inarrêtable !';document.getElementById('lvo').classList.add('show');confetti()}
 function closeLV(){document.getElementById('lvo').classList.remove('show')}
+
+// ============================================================ BOUTIQUE
+var SHOP=[
+ {id:'boost',ic:'⚡',n:'Boost XP ×2',d:'Double l\'XP de ta prochaine leçon',cost:60},
+ {id:'streak',ic:'🛡️',n:'Bouclier de série',d:'Garde ton streak si tu sautes un jour',cost:120},
+ {id:'zo_gold',ic:'👑',n:'Zo en or',d:'Une tenue dorée pour ta mascotte',cost:200},
+];
+function openShop(){document.getElementById('shop').classList.add('show');renderShop()}
+function closeShop(){document.getElementById('shop').classList.remove('show')}
+function renderShop(){
+ var sc=document.getElementById('shop-coins');if(sc)sc.textContent=G.coins||0;
+ document.getElementById('shop-items').innerHTML=SHOP.map(function(it){
+  var owned=(it.id==='zo_gold'&&G.zoGold)||(it.id==='boost'&&(G.boost||0)>0)||(it.id==='streak'&&G.shield);
+  var label=owned?'✓ Actif':(it.cost+' 🪙');
+  var dis=(owned||(G.coins||0)<it.cost)?'disabled':'';
+  return '<div class="shop-item"><div class="shop-ic">'+it.ic+'</div><div class="shop-info"><div class="shop-n">'+it.n+'</div><div class="shop-d">'+it.d+'</div></div><button class="shop-buy" '+dis+' onclick="buy(\''+it.id+'\')">'+label+'</button></div>';
+ }).join('');
+}
+function buy(id){
+ var it=SHOP.find(function(x){return x.id===id});if(!it)return;
+ if((G.coins||0)<it.cost){toast('🪙','Pas assez de pièces');return}
+ G.coins-=it.cost;
+ if(id==='boost')G.boost=(G.boost||0)+1;
+ if(id==='streak')G.shield=true;
+ if(id==='zo_gold'){G.zoGold=true;placeMascot('m-dash','happy')}
+ sv();renderShop();renderCoins();confetti();toast('🛒','Acheté : '+it.n+' !');
+}
+
+// ============================================================ CLASSEMENT (avec bots)
+var BOTNAMES=['Léa','Hugo','Jade','Noah','Emma','Lucas','Chloé','Gabriel','Manon','Inès','Raphaël','Sarah','Enzo','Lina','Adam','Louna'];
+function ensureBoard(){
+ if(!G.board){G.board=[];var used={};for(var i=0;i<9;i++){var n=BOTNAMES[Math.floor(Math.random()*BOTNAMES.length)];while(used[n]){n=BOTNAMES[Math.floor(Math.random()*BOTNAMES.length)]}used[n]=1;G.board.push({name:n,xp:Math.floor(120+Math.random()*1000)})}sv()}
+}
+function tickBots(){var t=new Date().toDateString();if(G.boardDay!==t){G.boardDay=t;(G.board||[]).forEach(function(b){b.xp+=Math.floor(15+Math.random()*110)});sv()}}
+function renderLeaderboard(){
+ ensureBoard();tickBots();
+ var me={name:G.name+' (toi)',xp:G.xpTotal||0,me:true};
+ var all=(G.board||[]).map(function(b){return {name:b.name,xp:b.xp}});all.push(me);
+ all.sort(function(a,b){return b.xp-a.xp});
+ var medals=['🥇','🥈','🥉'];var cols=['#fbbf24','#38bdf8','#a78bfa','#fb7185','#34d399','#2dd4bf'];
+ var top=all.slice(0,8);
+ if(top.indexOf(me)<0){top=all.slice(0,7);top.push(me)}
+ document.getElementById('lb-list').innerHTML=top.map(function(p){
+  var rk=all.indexOf(p)+1;var rkd=rk<=3?medals[rk-1]:rk;
+  return '<div class="lb'+(p.me?' me':'')+'"><div class="lb-rk">'+rkd+'</div><div class="lb-av" style="background:'+cols[(rk-1)%cols.length]+'">'+((p.name[0]||'?').toUpperCase())+'</div><div class="lb-n">'+p.name+'</div><div class="lb-xp">'+p.xp+' XP</div></div>';
+ }).join('');
+}
 
 // ============================================================ NAV
 function showTab(tab,btn){
@@ -1397,7 +1524,7 @@ function showTab(tab,btn){
 }
 
 // ============================================================ UTILS
-function toast(i,t){document.getElementById('ti').textContent=i;document.getElementById('tt').textContent=t;var el=document.getElementById('toast');el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},2800)}
+function toast(i,t){document.getElementById('ti').textContent=i;document.getElementById('tt').textContent=t;var el=document.getElementById('toast');el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},4000)}
 function confetti(){var cols=['#2dd4bf','#38bdf8','#a78bfa','#fb7185','#fbbf24','#34d399'];for(var i=0;i<48;i++){(function(){var el=document.createElement('div');el.className='cf';el.style.left=Math.random()*100+'vw';el.style.background=cols[Math.floor(Math.random()*cols.length)];el.style.animationDelay=Math.random()+'s';el.style.animationDuration=(2+Math.random()*2)+'s';el.style.width=(6+Math.random()*9)+'px';el.style.height=el.style.width;document.body.appendChild(el);setTimeout(function(){el.remove()},4500)})()}}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function styleLabel(s){return {visual:'visuel',audio:'auditif',reading:'lecture',kine:'pratique'}[s]||s}

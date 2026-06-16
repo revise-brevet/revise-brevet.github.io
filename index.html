@@ -931,14 +931,66 @@ function checkCloudSession(){
  });
 }
 
-// ============================================================ IA (relais Supabase → Claude)
-function aiReady(){return !!(sb&&sbUser)}
-function callAI(mode,prompt){
- if(!sb)return Promise.reject('no-sb');
- return sb.functions.invoke('ai',{body:{mode:mode,prompt:prompt}}).then(function(res){
-  if(res.error)throw res.error;
-  return (res.data&&res.data.text)||(res.data&&res.data.error)||'(pas de réponse)';
- });
+// ============================================================ ZO — assistant hors-ligne (gratuit, sans IA payante)
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()}
+// Base de connaissances : chaque entrée a des mots-clés (k) et une réponse (a)
+var KB=[
+ {k:['pythagore','hypotenuse','triangle rectangle'],a:"📐 Théorème de Pythagore\nDans un triangle rectangle : (hypoténuse)² = (côté1)² + (côté2)².\nL'hypoténuse est le plus grand côté, face à l'angle droit.\nEx : côtés 3 et 4 → hypoténuse = √(3²+4²) = √25 = 5.\nAstuce : sert à calculer un côté manquant, ou à prouver qu'un triangle est rectangle (réciproque)."},
+ {k:['thales','thalès','droites paralleles'],a:"📐 Théorème de Thalès\nSi deux droites sont coupées par deux parallèles, les longueurs sont proportionnelles :\nAD/AB = AE/AC = DE/BC.\nÇa sert à calculer une longueur manquante quand il y a des parallèles."},
+ {k:['identite remarquable','identites remarquables','a+b','developper'],a:"📐 Identités remarquables\n(a+b)² = a² + 2ab + b²\n(a−b)² = a² − 2ab + b²\n(a+b)(a−b) = a² − b²\nElles servent à développer (enlever les parenthèses) et à factoriser."},
+ {k:['pourcentage','pourcent','%','augmentation','reduction'],a:"📊 Pourcentages\n• x % d'un nombre = nombre × x/100.\n• Augmenter de x % = multiplier par (1 + x/100). Ex : +20 % → ×1,20.\n• Diminuer de x % = multiplier par (1 − x/100). Ex : −15 % → ×0,85."},
+ {k:['fraction','fractions','simplifier'],a:"➗ Fractions\n• Additionner : même dénominateur d'abord (a/c + b/c = (a+b)/c).\n• Multiplier : numérateurs entre eux, dénominateurs entre eux.\n• Diviser : on multiplie par l'inverse (÷ a/b = × b/a).\n• Simplifier : diviser haut et bas par le même nombre."},
+ {k:['equation','resoudre','inconnue','x ='],a:"📐 Résoudre une équation\nBut : isoler x. Ce qu'on fait d'un côté, on le fait de l'autre.\nEx : 3x + 7 = 22 → 3x = 22 − 7 = 15 → x = 15/3 = 5.\nVérifie en remplaçant x par ta réponse."},
+ {k:['aire','perimetre','cercle','rectangle','volume'],a:"📐 Aires & volumes utiles\n• Rectangle : aire = L×l, périmètre = 2(L+l).\n• Cercle : aire = πr², périmètre = 2πr.\n• Triangle : aire = (base × hauteur)/2.\n• Cylindre : V = πr²h. Sphère : V = (4/3)πr³."},
+ {k:['moyenne','mediane','statistique'],a:"📊 Moyenne & médiane\n• Moyenne = (somme des valeurs) ÷ (nombre de valeurs).\n• Médiane = la valeur du milieu quand on range dans l'ordre.\nEx : 2,3,5,7,9 → médiane = 5."},
+ {k:['probabilite','proba','chance'],a:"🎲 Probabilités\nProbabilité = (cas favorables) ÷ (cas possibles). Entre 0 et 1.\nEx : tirer un as dans 32 cartes = 4/32 = 1/8."},
+ // FRANÇAIS
+ {k:['figure de style','metaphore','comparaison','personnification'],a:"📝 Figures de style\n• Comparaison : rapproche 2 choses avec un outil (comme, tel que). « fort comme un lion ».\n• Métaphore : comparaison SANS outil. « cet homme est un lion ».\n• Personnification : donne du vivant à un objet. « le vent hurle ».\n• Hyperbole : exagération. « je meurs de faim »."},
+ {k:['cod','coi','complement'],a:"📝 COD / COI\n• COD : répond à « quoi ? / qui ? » après le verbe, SANS préposition. « Je mange une pomme ».\n• COI : avec une préposition (à, de). « Je parle à mon ami »."},
+ {k:['accord participe passe','participe passe','avoir','etre'],a:"📝 Accord du participe passé\n• Avec être : s'accorde avec le sujet. « Elles sont parties ».\n• Avec avoir : s'accorde avec le COD seulement s'il est placé AVANT. « Les pommes que j'ai mangées »."},
+ {k:['subjonctif','conjugaison','present','imparfait','passe simple'],a:"📝 Temps & modes\n• Imparfait : décor, habitude, action longue. « Il pleuvait ».\n• Passé simple : action brève au premier plan. « Soudain, il tomba ».\n• Subjonctif : après « il faut que », « je veux que »… « que tu viennes »."},
+ // HISTOIRE-GEO-EMC
+ {k:['guerre froide','urss','etats unis bloc'],a:"🌍 La Guerre froide (1947-1991)\nOpposition entre les USA (capitalisme) et l'URSS (communisme), sans guerre directe.\nÉvénements : mur de Berlin (1961), crise de Cuba (1962), chute du mur (1989), fin de l'URSS (1991)."},
+ {k:['seconde guerre mondiale','2nde guerre','shoah','hitler','nazi'],a:"🌍 Seconde Guerre mondiale (1939-1945)\nGuerre totale. Régime nazi d'Hitler (dictature). Shoah = génocide d'environ 6 millions de Juifs.\nFin en 1945. L'ONU est créée la même année pour la paix."},
+ {k:['premiere guerre mondiale','1ere guerre','14 18','tranchee'],a:"🌍 Première Guerre mondiale (1914-1918)\nGuerre totale : soldats dans les tranchées (Verdun 1916) + mobilisation de l'arrière (usines, femmes, propagande). ~10 millions de morts."},
+ {k:['revolution francaise','1789','bastille'],a:"🌍 Révolution française\nDébut en 1789 (prise de la Bastille le 14 juillet). Fin de la monarchie absolue, Déclaration des Droits de l'Homme."},
+ {k:['laicite','1905','eglise etat'],a:"🏛️ Laïcité\nLoi de 1905 : séparation des Églises et de l'État. Liberté de conscience, neutralité de l'État."},
+ {k:['ve republique','cinquieme republique','1958','institutions'],a:"🏛️ Ve République (depuis 1958)\nPrésident (élu au suffrage universel), Premier ministre, Parlement (Assemblée nationale + Sénat)."},
+ // SVT
+ {k:['adn','genetique','gene','allele','chromosome'],a:"🔬 Génétique\nL'ADN porte l'information génétique, dans le noyau, sur les chromosomes.\nUn gène a plusieurs versions = les allèles (un de chaque parent). D'où la ressemblance aux 2 parents."},
+ {k:['photosynthese','plante','chlorophylle'],a:"🔬 Photosynthèse\nLes plantes fabriquent du glucose grâce à la lumière :\nCO₂ + eau + lumière → glucose + O₂. Elles produisent l'oxygène."},
+ {k:['mitose','meiose','cellule','reproduction'],a:"🔬 Divisions cellulaires\n• Mitose : 1 cellule → 2 cellules identiques (même ADN).\n• Méiose : produit les gamètes (moitié des chromosomes), pour la reproduction sexuée."},
+ {k:['evolution','darwin','selection naturelle'],a:"🔬 Évolution\nThéorie de Darwin : les êtres vivants évoluent par sélection naturelle (les mieux adaptés survivent et se reproduisent davantage)."},
+ // PHYSIQUE-CHIMIE
+ {k:['loi ohm','ohm','tension','resistance','intensite'],a:"⚗️ Loi d'Ohm\nU = R × I.\nU = tension (Volts), R = résistance (Ohms), I = intensité (Ampères).\nEn circuit série, l'intensité est la même partout."},
+ {k:['energie','cinetique','potentielle'],a:"⚗️ Énergies\n• Énergie cinétique : Ec = ½ × m × v² (liée au mouvement).\n• Énergie potentielle (hauteur) : Ep = m × g × h. Unité : le Joule (J)."},
+ {k:['force','newton','poids'],a:"⚗️ Forces & poids\nUne force s'exprime en Newton (N). Le poids P = m × g, avec g ≈ 10 N/kg sur Terre.\nEx : 2 kg → poids = 2 × 10 = 20 N."},
+ {k:['etats matiere','solide','liquide','gaz','fusion'],a:"⚗️ États de la matière\nSolide ↔ Liquide ↔ Gaz.\nFusion (solide→liquide), solidification, vaporisation (liquide→gaz), liquéfaction."},
+ {k:['atome','molecule'],a:"⚗️ Atome / molécule\n• Atome : la plus petite unité d'un élément. • Molécule : plusieurs atomes liés (ex : H₂O = 2 H + 1 O)."},
+ // ANGLAIS
+ {k:['present perfect','have been','for since'],a:"🇬🇧 Present perfect\nHave/has + participe passé. Action passée liée au présent, ou avec for/since (depuis).\n« I have lived here for 5 years » = j'habite ici depuis 5 ans."},
+ {k:['preterit','past simple','verbe irregulier'],a:"🇬🇧 Prétérit (past simple)\nAction passée terminée. Réguliers : verbe + -ed (worked). Irréguliers à apprendre (go→went, see→saw)."},
+ // BREVET
+ {k:['brevet','dnb','mention','controle continu','epreuve'],a:"🎓 Le brevet (DNB)\nNote finale = contrôle continu (40 %) + épreuves finales (60 %).\nÉpreuves : Français, Maths, Histoire-Géo-EMC, Sciences, Oral.\nMentions : Assez Bien ≥ 12, Bien ≥ 14, Très Bien ≥ 16. Obtenu dès 10/20.\nLe programme couvre la 5ᵉ, la 4ᵉ et la 3ᵉ."},
+ {k:['reviser','methode','apprendre','memoriser','fiche'],a:"🧠 Bien réviser\n1) 20-30 min par jour > 3h d'un coup.\n2) Refais tes erreurs, c'est là qu'on progresse.\n3) Récite à voix haute / fais des fiches colorées.\n4) Répétition espacée : revois à J+1, J+3, J+7.\n5) Dors bien avant le brevet !"},
+];
+var SUBWORDS={ma:['math','maths','mathematique','calcul','equation','geometrie','nombre','fraction','pythagore','thales'],fr:['francais','grammaire','orthographe','conjugaison','redaction','texte','figure de style','dictee'],hg:['histoire','geo','geographie','emc','guerre','revolution','date'],pc:['physique','chimie','energie','force','electricite','atome','reaction'],sv:['svt','biologie','adn','genetique','cellule','plante','corps'],te:['techno','technologie','programmation','algorithme','code'],an:['anglais','english'],es:['espagnol','allemand','italien','lv2','langue'],ep:['eps','sport']};
+function detectSubject(n){var best=null,sc=0;for(var id in SUBWORDS){SUBWORDS[id].forEach(function(w){if(n.indexOf(w)>=0&&w.length>sc){sc=w.length;best=id}})}return best}
+function genExercises(sid){
+ if(!sid)sid='ma';var s=SUB.find(function(x){return x.id===sid})||SUB[1];
+ var out='Voici 3 exercices de '+s.n+' 💪\n\n',ans='\n— — —\n✅ Réponses :\n';
+ if(sid==='ma'){var ds=['e','m','h'];for(var i=0;i<3;i++){var q=genMath(ds[i]);out+=(i+1)+') '+q.q+'\n';ans+=(i+1)+') '+q.ch[q.a]+'\n'}}
+ else{var pool=shuffle((QB[sid]||[]).slice()).slice(0,3);if(!pool.length)return 'Je n\'ai pas encore d\'exercices écrits pour '+s.n+', mais lance l\'onglet ⚡ Quiz ou 🃏 Fiches pour cette matière !';pool.forEach(function(q,i){out+=(i+1)+') '+q.q+'\n   '+q.ch.map(function(c,j){return String.fromCharCode(97+j)+') '+c}).join('   ')+'\n\n';ans+=(i+1)+') '+q.ch[q.a]+'\n'})}
+ return out+ans+'\n👉 Pour t\'entraîner pour de vrai, va dans l\'onglet ⚡ Quiz !';
+}
+function localAnswer(text){
+ var n=norm(text);
+ if(/\b(exo|exos|exercice|exercices|entrain|entraine|entrainement|interro|teste moi|test moi)\b/.test(n)||(n.indexOf('donne')>=0&&n.indexOf('exerc')>=0)){return genExercises(detectSubject(n))}
+ var best=null,bsc=0;KB.forEach(function(e){var sc=0;e.k.forEach(function(kw){if(n.indexOf(norm(kw))>=0)sc+=kw.length});if(sc>bsc){bsc=sc;best=e}});
+ if(best&&bsc>=4)return best.a;
+ var sid=detectSubject(n);
+ if(sid){var s=SUB.find(function(x){return x.id===sid});return 'En '+s.i+' '+s.n+', je peux t\'aider ! Dis-moi une notion précise (ex : « explique-moi Pythagore ») ou demande « donne-moi des exercices de '+s.n+' ». Tu peux aussi t\'entraîner dans l\'onglet ⚡ Quiz et 🃏 Fiches.'}
+ return "Bonne question ! 🤔 Je connais plein de notions du brevet (maths, français, histoire, SVT, physique, anglais...).\nEssaie par exemple :\n• « explique-moi le théorème de Pythagore »\n• « c'est quoi une métaphore ? »\n• « donne-moi des exercices de maths »\n• « comment bien réviser ? »";
 }
 function aiShow(who,text,loading){
  var box=document.getElementById('ai-resp');if(!box)return;
@@ -952,31 +1004,18 @@ function aiReplace(text){
  if(l){l.classList.remove('ai-loading');l.textContent=text}else{aiShow('zo',text)}
  box.scrollTop=box.scrollHeight;
 }
-function aiSend(){
- var inp=document.getElementById('ai-input');if(!inp)return;var t=inp.value.trim();if(!t)return;
- if(!aiReady()){aiShow('zo','Pour discuter avec moi (IA), connecte-toi d\'abord : onglet Profil → « Se connecter / Créer un compte » 🔒');return}
- aiShow('me',t);inp.value='';aiShow('zo','Zo réfléchit…',true);
- callAI('ask',t).then(function(r){aiReplace(r)}).catch(function(){aiReplace('Oups, je n\'arrive pas à répondre là 😅. Vérifie ta connexion et réessaie.')});
-}
+function aiRespond(prompt){aiShow('zo','Zo réfléchit…',true);setTimeout(function(){aiReplace(localAnswer(prompt))},350)}
+function aiSend(){var inp=document.getElementById('ai-input');if(!inp)return;var t=inp.value.trim();if(!t)return;aiShow('me',t);inp.value='';aiRespond(t)}
 function aiQuick(kind){
- if(!aiReady()){aiShow('zo','Connecte-toi (onglet Profil) pour activer l\'IA 🔒');return}
  var sub=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]})[0];
- var prompt=kind==='exos'?('Donne-moi 3 exercices de '+sub.n+' niveau 3e (brevet) avec les réponses.'):('Explique-moi simplement une notion importante de '+sub.n+' à connaître pour le brevet.');
- var mode=kind==='exos'?'exos':'lecon';
- aiShow('me',kind==='exos'?('Des exercices de '+sub.n):('Explique une leçon de '+sub.n));
- aiShow('zo','Zo prépare ça…',true);
- callAI(mode,prompt).then(function(r){aiReplace(r)}).catch(function(){aiReplace('Oups, réessaie dans un instant 😅')});
+ if(kind==='exos'){aiShow('me','Des exercices de '+sub.n);aiShow('zo','Zo prépare ça…',true);setTimeout(function(){aiReplace(genExercises(sub.id))},350)}
+ else{aiShow('me','Explique une notion de '+sub.n);aiShow('zo','Zo réfléchit…',true);setTimeout(function(){aiReplace(localAnswer(sub.n))},350)}
 }
 function aiExplain(){
- if(!aiReady()){toast('🔒','Connecte-toi (Profil) pour l\'IA');return}
- var q=qQs[qIdx];if(!q)return;
- var btn=document.getElementById('qai');if(btn){btn.disabled=true;btn.textContent='🤖 Zo réfléchit…'}
- var s=SUB.find(function(x){return x.id===qSub});
- var p='Matière : '+(s?s.n:'')+'. Question : "'+q.q+'". Bonne réponse : "'+q.ch[q.a]+'". Explique simplement pourquoi à un élève de 3e qui s\'est trompé.';
- callAI('explain',p).then(function(r){
-  var ex=document.getElementById('qex');if(ex)ex.innerHTML+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--b)"><b>🤖 Zo :</b> '+r.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>';
-  if(btn)btn.style.display='none';
- }).catch(function(){if(btn){btn.disabled=false;btn.textContent='🤖 Réessayer'}});
+ var q=qQs[qIdx];if(!q)return;var btn=document.getElementById('qai');
+ var ans=localAnswer(q.q);
+ var ex=document.getElementById('qex');if(ex)ex.innerHTML+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--b)"><b>🤖 Zo :</b> '+ans.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>';
+ if(btn)btn.style.display='none';
 }
 
 // ============================================================ ONBOARDING
@@ -1301,7 +1340,7 @@ function ans(c){
  if(q.d==='h'){G.cog.hardTot++;if(c===q.a)G.cog.hardOk++}
  if(q.d==='e'){G.cog.easyTot++;if(c===q.a)G.cog.easyOk++}
  if(c===q.a){btns[c].classList.add('ok');qOk++;addXP(10+Math.floor(qTime*0.5),'✅ Correct !');addCoins(2);G.sc[qSub]=Math.min(20,G.sc[qSub]+0.1);var s=SUB.find(function(x){return x.id===qSub});var tp=s.t[Math.floor(Math.random()*s.t.length)];G.ms[qSub][tp]=Math.min(100,(G.ms[qSub][tp]||30)+5);cheer('m-quiz');document.getElementById('m-quiz-msg').innerHTML=pk(['Bravo, c\'est ça ! 🎉','Parfait ! 💪','Tu gères ! ⭐'])}
- else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);document.getElementById('m-quiz-msg').innerHTML='<b>Pas grave !</b> '+q.e;var qa=document.getElementById('qai');if(qa&&aiReady())qa.style.display='block'}
+ else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);document.getElementById('m-quiz-msg').innerHTML='<b>Pas grave !</b> '+q.e;var qa=document.getElementById('qai');if(qa)qa.style.display='block'}
  document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');
  G.tq++;if(c===q.a)G.tc++;sv();
 }

@@ -243,6 +243,24 @@ input[type=range]{width:84px;accent-color:var(--p)}
 .scratch-t{width:100%;min-height:70px;background:rgba(10,14,30,.6);border:1px dashed var(--bh);border-radius:11px;color:var(--t);font-size:.95rem;padding:10px;font-family:'Courier New',monospace;resize:vertical}
 .scratch-t:focus{outline:none;border-color:var(--amber)}
 .scratch-btn{font-size:.76rem;font-weight:700;color:var(--amber);background:rgba(251,191,36,.1);border:1px solid var(--b);border-radius:9px;padding:6px 11px;cursor:pointer;margin-top:9px}
+.ai-card{background:linear-gradient(135deg,rgba(167,139,250,.13),rgba(56,189,248,.08));border:1px solid rgba(167,139,250,.28);border-radius:20px;padding:16px;margin-bottom:18px}
+.ai-head{font-size:1rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ai-badge{font-size:.62rem;font-weight:900;background:linear-gradient(120deg,var(--violet),var(--p2));color:#0a0e1f;padding:2px 8px;border-radius:20px;letter-spacing:.5px}
+.ai-quick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.ai-q{font-size:.78rem;font-weight:700;padding:7px 12px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid var(--b);color:var(--t);cursor:pointer;transition:.2s}
+.ai-q:hover{border-color:var(--violet)}
+.ai-resp{background:rgba(10,14,30,.5);border:1px solid var(--b);border-radius:13px;padding:12px;max-height:280px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+.ai-hint{font-size:.8rem;color:var(--t3);line-height:1.5}
+.ai-msg{font-size:.86rem;line-height:1.55;padding:9px 12px;border-radius:12px;max-width:92%;white-space:pre-wrap;word-wrap:break-word}
+.ai-me{align-self:flex-end;background:linear-gradient(120deg,var(--p),var(--p2));color:#04221f;font-weight:600;border-bottom-right-radius:4px}
+.ai-zo{align-self:flex-start;background:var(--card2);border:1px solid var(--b);border-bottom-left-radius:4px}
+.ai-loading{opacity:.6;animation:pulse 1.2s ease-in-out infinite}
+.ai-input-row{display:flex;gap:8px}
+.ai-input-row input{flex:1;padding:11px 14px;background:rgba(10,14,30,.6);border:1px solid var(--b);border-radius:12px;color:var(--t);font-size:.9rem}
+.ai-input-row input:focus{outline:none;border-color:var(--violet)}
+.ai-send{width:44px;border:none;border-radius:12px;background:linear-gradient(120deg,var(--violet),var(--p2));color:#0a0e1f;font-size:1.1rem;font-weight:900;cursor:pointer}
+.qai{width:100%;margin-top:10px;padding:11px;border-radius:11px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:var(--violet);font-weight:700;font-size:.85rem;cursor:pointer}
+.qai:hover{background:rgba(167,139,250,.2)}
 .qres{text-align:center;padding:32px 14px;display:none}
 .qres.show{display:block;animation:pop .5s ease}
 .re{font-size:4.6rem;display:block;animation:float 2s ease-in-out infinite;margin-bottom:8px}
@@ -473,6 +491,20 @@ input[type=range]{width:84px;accent-color:var(--p)}
         <div id="m-dash"></div>
         <div class="bubble"><div class="who">Zo • ton coach</div><div class="msg" id="m-dash-msg">...</div><button class="more" onclick="newAdvice()">💬 Un autre conseil</button></div>
       </div>
+
+      <div class="ai-card">
+        <div class="ai-head">🤖 Demande à Zo <span class="ai-badge">IA</span></div>
+        <div class="ai-quick">
+          <button class="ai-q" onclick="aiQuick('exos')">📝 Des exercices</button>
+          <button class="ai-q" onclick="aiQuick('lecon')">📖 Explique une leçon</button>
+        </div>
+        <div class="ai-resp" id="ai-resp"><div class="ai-hint" id="ai-hint">Pose-moi une question : « explique-moi Thalès », « donne-moi des exercices de conjugaison »…</div></div>
+        <div class="ai-input-row">
+          <input type="text" id="ai-input" placeholder="Écris ta question ici..." onkeydown="if(event.key==='Enter')aiSend()">
+          <button class="ai-send" onclick="aiSend()">➤</button>
+        </div>
+      </div>
+
       <div class="routine">
         <div class="rt-top"><div class="rt-title">📅 Ta routine du jour</div><div class="rt-focus" id="rt-focus"></div></div>
         <div class="rt-goal" id="rt-goal"></div>
@@ -899,6 +931,54 @@ function checkCloudSession(){
  });
 }
 
+// ============================================================ IA (relais Supabase → Claude)
+function aiReady(){return !!(sb&&sbUser)}
+function callAI(mode,prompt){
+ if(!sb)return Promise.reject('no-sb');
+ return sb.functions.invoke('ai',{body:{mode:mode,prompt:prompt}}).then(function(res){
+  if(res.error)throw res.error;
+  return (res.data&&res.data.text)||(res.data&&res.data.error)||'(pas de réponse)';
+ });
+}
+function aiShow(who,text,loading){
+ var box=document.getElementById('ai-resp');if(!box)return;
+ var h=document.getElementById('ai-hint');if(h)h.remove();
+ var d=document.createElement('div');d.className='ai-msg '+(who==='me'?'ai-me':'ai-zo')+(loading?' ai-loading':'');
+ d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;
+}
+function aiReplace(text){
+ var box=document.getElementById('ai-resp');if(!box)return;
+ var l=box.querySelector('.ai-loading');
+ if(l){l.classList.remove('ai-loading');l.textContent=text}else{aiShow('zo',text)}
+ box.scrollTop=box.scrollHeight;
+}
+function aiSend(){
+ var inp=document.getElementById('ai-input');if(!inp)return;var t=inp.value.trim();if(!t)return;
+ if(!aiReady()){aiShow('zo','Pour discuter avec moi (IA), connecte-toi d\'abord : onglet Profil → « Se connecter / Créer un compte » 🔒');return}
+ aiShow('me',t);inp.value='';aiShow('zo','Zo réfléchit…',true);
+ callAI('ask',t).then(function(r){aiReplace(r)}).catch(function(){aiReplace('Oups, je n\'arrive pas à répondre là 😅. Vérifie ta connexion et réessaie.')});
+}
+function aiQuick(kind){
+ if(!aiReady()){aiShow('zo','Connecte-toi (onglet Profil) pour activer l\'IA 🔒');return}
+ var sub=SUB.slice().sort(function(a,b){return G.sc[a.id]-G.sc[b.id]})[0];
+ var prompt=kind==='exos'?('Donne-moi 3 exercices de '+sub.n+' niveau 3e (brevet) avec les réponses.'):('Explique-moi simplement une notion importante de '+sub.n+' à connaître pour le brevet.');
+ var mode=kind==='exos'?'exos':'lecon';
+ aiShow('me',kind==='exos'?('Des exercices de '+sub.n):('Explique une leçon de '+sub.n));
+ aiShow('zo','Zo prépare ça…',true);
+ callAI(mode,prompt).then(function(r){aiReplace(r)}).catch(function(){aiReplace('Oups, réessaie dans un instant 😅')});
+}
+function aiExplain(){
+ if(!aiReady()){toast('🔒','Connecte-toi (Profil) pour l\'IA');return}
+ var q=qQs[qIdx];if(!q)return;
+ var btn=document.getElementById('qai');if(btn){btn.disabled=true;btn.textContent='🤖 Zo réfléchit…'}
+ var s=SUB.find(function(x){return x.id===qSub});
+ var p='Matière : '+(s?s.n:'')+'. Question : "'+q.q+'". Bonne réponse : "'+q.ch[q.a]+'". Explique simplement pourquoi à un élève de 3e qui s\'est trompé.';
+ callAI('explain',p).then(function(r){
+  var ex=document.getElementById('qex');if(ex)ex.innerHTML+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--b)"><b>🤖 Zo :</b> '+r.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div>';
+  if(btn)btn.style.display='none';
+ }).catch(function(){if(btn){btn.disabled=false;btn.textContent='🤖 Réessayer'}});
+}
+
 // ============================================================ ONBOARDING
 var ostep=1,selStyle=null,initSc={},diagIdx=0,diagScore=0,diagStart=0,diagQs=[],diagTimes=[],diagSub={},diagWOk=0,diagWTot=0;
 var DW={e:1,m:1.6,h:2.4};
@@ -1207,7 +1287,7 @@ function renderQ(){
  qTime=(q.d==='h')?22:(q.d==='m')?28:38;qAns=false;qQStart=Date.now();
  var dc={e:'#34d399',m:'#fbbf24',h:'#fb7185'}[q.d]||'#a78bfa';var dl={e:'Facile',m:'Moyen',h:'Difficile'}[q.d]||'Mix';
  var lvtag=q.lv?'<span class="lvtag">'+q.lv+'ᵉ</span>':'';
- document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><button class="qb-idk" id="qidk" onclick="idk()">🤷 Je ne sais pas</button><button class="scratch-btn" onclick="toggleScratch()">✏️ Brouillon (calculs)</button><div class="scratch" id="scratch" style="display:none"><textarea class="scratch-t" id="scratch-t" placeholder="Pose tes calculs ici... (137 − 48 = ...)"></textarea></div><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
+ document.getElementById('qarea').innerHTML='<div class="qcard au"><div class="qmeta"><span class="qnum">Question '+(qIdx+1)+' / '+qQs.length+'</span><div class="qtimer">⏱ <span id="tv">'+qTime+'</span>s</div></div><div class="qprog"><div id="qpf" style="width:'+(qIdx/qQs.length*100)+'%"></div></div><div class="qdiff" style="background:'+dc+'22;color:'+dc+';border:1px solid '+dc+'55">'+dl+'</div>'+lvtag+'<div class="qq">'+q.q+'</div><div class="qch">'+q.ch.map(function(c,i){return '<button class="qb" onclick="ans('+i+')">'+c+'</button>'}).join('')+'</div><button class="qb-idk" id="qidk" onclick="idk()">🤷 Je ne sais pas</button><button class="scratch-btn" onclick="toggleScratch()">✏️ Brouillon (calculs)</button><div class="scratch" id="scratch" style="display:none"><textarea class="scratch-t" id="scratch-t" placeholder="Pose tes calculs ici... (137 − 48 = ...)"></textarea></div><div class="expl" id="qex"><b>💡 </b>'+q.e+'</div><button class="qai" id="qai" onclick="aiExplain()" style="display:none">🤖 Zo, explique-moi autrement</button><button class="qnext" id="qnxt" onclick="nextQ()">Question suivante →</button></div>';
  qTmr=setInterval(function(){qTime--;var tv=document.getElementById('tv');if(tv){tv.textContent=qTime;tv.parentNode.style.color=qTime<=8?'var(--rose)':'var(--amber)'}if(qTime<=0){clearInterval(qTmr);if(!qAns)timeQ()}},1000);
 }
 function ans(c){
@@ -1221,7 +1301,7 @@ function ans(c){
  if(q.d==='h'){G.cog.hardTot++;if(c===q.a)G.cog.hardOk++}
  if(q.d==='e'){G.cog.easyTot++;if(c===q.a)G.cog.easyOk++}
  if(c===q.a){btns[c].classList.add('ok');qOk++;addXP(10+Math.floor(qTime*0.5),'✅ Correct !');addCoins(2);G.sc[qSub]=Math.min(20,G.sc[qSub]+0.1);var s=SUB.find(function(x){return x.id===qSub});var tp=s.t[Math.floor(Math.random()*s.t.length)];G.ms[qSub][tp]=Math.min(100,(G.ms[qSub][tp]||30)+5);cheer('m-quiz');document.getElementById('m-quiz-msg').innerHTML=pk(['Bravo, c\'est ça ! 🎉','Parfait ! 💪','Tu gères ! ⭐'])}
- else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);document.getElementById('m-quiz-msg').innerHTML='<b>Pas grave !</b> '+q.e}
+ else{if(c>=0)btns[c].classList.add('ko');G.sc[qSub]=Math.max(0,G.sc[qSub]-0.05);document.getElementById('m-quiz-msg').innerHTML='<b>Pas grave !</b> '+q.e;var qa=document.getElementById('qai');if(qa&&aiReady())qa.style.display='block'}
  document.getElementById('qex').classList.add('show');document.getElementById('qnxt').classList.add('show');
  G.tq++;if(c===q.a)G.tc++;sv();
 }
